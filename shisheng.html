@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1280" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>识生</title>
 <style>
   :root {
@@ -20,11 +20,11 @@
     font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--fg); }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); }
   button, a { cursor: pointer; }
   button { font: inherit; color: inherit; }
   img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-  .app { display: flex; min-height: 100vh; }
+  .app { display: flex; height: 100vh; overflow: hidden; }
   aside.nav {
     position: sticky; top: 0; height: 100vh; width: 208px; flex: none;
     display: flex; flex-direction: column; gap: 4px;
@@ -49,7 +49,7 @@
   .fields label { display: flex; flex-direction: column; gap: 4px; }
   .checks { display: flex; gap: 16px; align-items: center; margin: 8px 0; font-size: 14px; color: var(--fg); }
   .warn { color: var(--clay); font-size: 12px; }
-  main { flex: 1; min-width: 0; padding: 28px 32px 48px; }
+  main { flex: 1; min-width: 0; height: 100vh; overflow: auto; padding: 20px 40px 28px; display: flex; flex-direction: column; }
   h1, h2 { font-family: "Songti SC", "STSong", serif; font-weight: 600; margin: 0; }
   .muted { color: var(--muted); }
   .row { display: flex; gap: 12px; align-items: center; }
@@ -74,13 +74,35 @@
   .stat span { color: var(--muted); font-size: 12px; }
   .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .check { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border-radius: 12px; padding: 12px 16px; box-shadow: inset 0 0 0 1px var(--border); }
-  .drill { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 32px; max-width: 960px; align-items: start; }
-  .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 520px; margin-top: 24px; }
+  .drill {
+    flex: 1;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+    min-height: calc(100vh - 48px);
+  }
+  .drill .card { width: clamp(300px, calc((100vh - 150px) * 0.75), 480px); }
+  .capline, .cardcap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+  .capline {
+    margin: 18px 0 0;
+    font-family: "Songti SC", "STSong", serif;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .cardcap { justify-content: center; }
+  .capline span, .cardcap span { white-space: nowrap; }
+  .actions { display: grid; grid-template-columns: repeat(3, minmax(0, 160px)); gap: 8px; margin-top: 28px; }
   .faces { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 880px; }
   .faces button { padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: none; }
   .faces button.ok { border-color: var(--primary); }
   .faces button.bad { border-color: var(--clay); }
-  .roster { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; max-width: 1100px; }
+  .roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; }
   .roster button { padding: 0 0 8px; border: 0; text-align: left; background: var(--surface); border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--border); }
   .roster button p { margin: 8px 8px 0; font-size: 12px; line-height: 1.45; }
   .drop { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; padding: 16px; text-align: center; border: 1px dashed var(--border); border-radius: 12px; background: var(--surface); }
@@ -146,11 +168,17 @@ function roster() {
 function pendingList() {
   return linked.students.filter((s) => !s.sure);
 }
-function caption(s) {
+function bits(s) {
   const needy = s.needyLabel || (s.needy ? "困难" : "非困难");
   const psych = s.psychLabel || (s.psychFocus ? "心理关注" : "无关注");
-  if (s.studentNo) return [s.className, s.name, s.studentNo, needy, psych, s.hometown].filter(Boolean).join("  ");
-  return [s.name, s.className, needy, psych, s.hometown].filter(Boolean).join("  ");
+  if (s.studentNo) return [s.className, s.name, s.studentNo, needy, psych, s.hometown].filter(Boolean);
+  return [s.name, s.className, needy, psych, s.hometown].filter(Boolean);
+}
+function caption(s) {
+  return bits(s).join("  ");
+}
+function capHtml(s, cls) {
+  return `<p class="${cls}">${bits(s).map((part) => `<span>${esc(part)}</span>`).join("")}</p>`;
 }
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => {
@@ -347,10 +375,10 @@ function drillView() {
   }
   const revealed = session.phase === "reveal";
   return `<div class="drill">
-    <div class="card">${photo(s.photo)}<p class="muted">${revealed ? esc(caption(s)) : "词条已遮住"}</p></div>
+    <div class="card">${photo(s.photo)}${revealed ? capHtml(s, "cardcap") : `<p class="muted">词条已遮住</p>`}</div>
     <div>
       <p class="muted">${session.index + 1} / ${session.queue.length} · ${sec}s</p>
-      ${revealed ? `<h1 style="font-size:28px;margin-top:24px">${esc(caption(s))}</h1>` : `<h1 style="font-size:40px;margin-top:24px">先说出来</h1><p class="muted">${s.studentNo ? "班级 · 姓名 · 学号 · 贫困 · 心理 · 籍贯" : "姓名 · 班级 · 困难 · 心理 · 籍贯"}</p>`}
+      ${revealed ? capHtml(s, "capline") : `<h1 style="font-size:40px;margin-top:24px">先说出来</h1><p class="muted">${s.studentNo ? "班级 · 姓名 · 学号 · 贫困 · 心理 · 籍贯" : "姓名 · 班级 · 困难 · 心理 · 籍贯"}</p>`}
       ${revealed && session.mode !== "exam" ? `<div class="actions">
         <button class="btn again" data-rate="again">认不出 <kbd>1</kbd></button>
         <button class="btn hard" data-rate="hard">漏字段 <kbd>2</kbd></button>
