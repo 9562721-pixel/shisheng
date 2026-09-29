@@ -1,0 +1,14 @@
+{
+  "name": "shisheng",
+  "version": "2.0.0",
+  "private": true,
+  "description": "辅导员看图速记：完整认识，六人一组，按需自测",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "verify": "node scripts/verify.cjs",
+    "verify:edges": "node scripts/verify-edges.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.60.0"
+  }
+}
