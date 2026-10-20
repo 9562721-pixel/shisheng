@@ -1,14 +1,21 @@
 {
   "name": "shisheng",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "辅导员看图速记：完整认识，六人一组，按需自测",
+  "description": "识生年度考核：官方材料、照片总览、固定分组与学习计划",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "verify": "node scripts/verify.cjs",
-    "verify:edges": "node scripts/verify-edges.cjs"
+    "test": "node --experimental-strip-types --test src/v3/annual.test.mjs src/v3/assessment.test.mjs src/v3/overview.test.mjs src/v3/study-plan.test.mjs src/v3/legacy.test.mjs",
+    "build:legacy": "node scripts/build-v2.mjs"
   },
   "devDependencies": {
-    "playwright": "1.60.0"
+    "vite": "8.3.2",
+    "fake-indexeddb": "6.2.5"
+  },
+  "type": "module",
+  "dependencies": {
+    "jszip": "3.10.2",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "4.6.5"
   }
 }

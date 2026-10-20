@@ -1,0 +1,1946 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><title>识生 · 考核学习</title><style>:root {
+  --bg: #f4f0e7;
+  --paper: #fffdf7;
+  --ink: #242b25;
+  --muted: #73776d;
+  --line: #dedfd3;
+  --green: #245a43;
+  --soft: #e5edde;
+  --orange: #9b5837;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+input,
+select {
+  touch-action: manipulation;
+}
+button,
+a {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #bd8a40;
+  outline-offset: 4px;
+}
+button {
+  border: 0;
+}
+a {
+  color: inherit;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+.serif {
+  font-family: "Songti SC", "STSong", serif;
+}
+h1 {
+  font-size: 44px;
+  line-height: 1.25;
+  letter-spacing: -1px;
+}
+h2 {
+  font-size: 26px;
+}
+p {
+  line-height: 1.7;
+}
+.muted,
+small {
+  color: var(--muted);
+}
+small {
+  font-size: 13px;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--green);
+  font-weight: 700;
+}
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+.nav {
+  width: 216px;
+  flex-shrink: 0;
+  padding: 34px 22px;
+  border-right: 1px solid var(--line);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.brand {
+  text-decoration: none;
+  margin-bottom: 46px;
+  display: block;
+}
+.brand b {
+  font-family: "Songti SC", serif;
+  font-size: 34px;
+  display: block;
+}
+.brand small {
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+.nav a.item {
+  padding: 13px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+}
+.nav a.item.on {
+  background: var(--green);
+  color: white;
+}
+.nav a.item:hover:not(.on) {
+  background: var(--bg);
+}
+.navfooter {
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.navfooter span {
+  display: block;
+}
+.main {
+  width: 100%;
+  min-width: 0;
+  max-width: 1400px;
+  padding: 42px 54px 32px;
+  margin: auto;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.source {
+  font-size: 13px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 46px;
+  align-items: center;
+  margin: 24px 0 36px;
+}
+.hero h1 {
+  font-size: clamp(34px, 4vw, 54px);
+  margin: 16px 0;
+}
+.hero p {
+  max-width: 530px;
+}
+.heroart {
+  border: 1px solid var(--line);
+  padding: 24px;
+  background: var(--paper);
+  border-radius: 18px;
+  transform: rotate(2deg);
+  box-shadow: 0 18px 44px #243b2610;
+}
+.steps {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+.step {
+  padding: 14px 8px;
+  flex: 1;
+  border-top: 2px solid var(--line);
+  font-size: 13px;
+}
+.step b {
+  display: block;
+  margin-top: 8px;
+  font-size: 15px;
+}
+.step.active {
+  border-color: var(--green);
+  color: var(--green);
+}
+.btn {
+  border-radius: 10px;
+  background: var(--green);
+  color: white;
+  padding: 13px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 15px;
+  text-decoration: none;
+  min-height: 46px;
+}
+.btn.secondary {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.btn.soft {
+  background: var(--soft);
+  color: var(--green);
+}
+.btn.warn {
+  background: #f0e3d7;
+  color: var(--orange);
+}
+.btn.small {
+  padding: 8px 14px;
+  min-height: 36px;
+  font-size: 13px;
+}
+.link {
+  background: none;
+  color: var(--muted);
+  padding: 8px;
+  text-decoration: underline;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 24px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
+.metric {
+  border-top: 1px solid var(--line);
+  padding: 20px 0;
+}
+.metric b {
+  font-family: Georgia, serif;
+  font-size: 34px;
+  margin-right: 9px;
+  font-weight: 400;
+}
+.metric span {
+  font-size: 14px;
+  color: var(--muted);
+}
+.panel {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.between {
+  justify-content: space-between;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--muted);
+}
+select,
+input[type="text"],
+input[type="search"] {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--ink);
+  max-width: 100%;
+  min-height: 43px;
+}
+input[type="search"] {
+  width: 300px;
+}
+.controls {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 22px 0;
+}
+.notice {
+  padding: 12px 16px;
+  border-left: 3px solid #ba8054;
+  background: #f0e5d8;
+  font-size: 14px;
+  margin: 20px 0;
+  line-height: 1.7;
+}
+.notice a {
+  text-decoration: underline;
+}
+.progress {
+  height: 4px;
+  background: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 14px 0 24px;
+}
+.progress span {
+  display: block;
+  background: var(--green);
+  height: 100%;
+  transition: width 0.2s;
+}
+.learn {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.portrait {
+  background: #e9e7de;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+}
+.portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.photo-label {
+  padding: 12px 4px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.answer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 22px;
+}
+.answer .datum {
+  padding: 15px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-width: 0;
+  text-align: left;
+  color: var(--ink);
+}
+.datum small {
+  display: block;
+  margin-bottom: 7px;
+}
+.datum b {
+  font-size: 21px;
+  line-height: 1.5;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.datum.name {
+  grid-column: 1/-1;
+}
+.datum.name b {
+  font-family: "Songti SC", serif;
+  font-size: 32px;
+}
+.datum.miss {
+  border-color: var(--orange);
+  background: #f4e8df;
+}
+.datum input {
+  accent-color: var(--orange);
+  margin-right: 5px;
+}
+.recallhint {
+  padding: 42px 0 26px;
+}
+.recallhint h2 {
+  font-size: 34px;
+  margin-bottom: 18px;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.pill {
+  border: 1px solid var(--line);
+  padding: 7px 12px;
+  border-radius: 30px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.roster {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+.student {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  min-width: 0;
+}
+.student .portrait {
+  border: 0;
+  border-radius: 0;
+}
+.student .info {
+  padding: 13px;
+  overflow-wrap: anywhere;
+}
+.student h3 {
+  font-size: 17px;
+  margin-bottom: 4px;
+}
+.student p {
+  font-size: 12px;
+}
+.student .btn {
+  margin-top: 10px;
+  width: 100%;
+}
+.error {
+  color: #a04228;
+}
+.empty {
+  padding: 60px 20px;
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+}
+.empty h2 {
+  margin-bottom: 12px;
+}
+.result {
+  max-width: 760px;
+  margin: 34px auto;
+}
+.result h1 {
+  margin-bottom: 16px;
+}
+.resultlist {
+  list-style: none;
+  padding: 0;
+  margin: 25px 0;
+}
+.resultlist li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+.modegrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 25px 0;
+}
+.mode {
+  padding: 24px 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-align: left;
+  color: var(--ink);
+}
+.mode.on {
+  border: 2px solid var(--green);
+  background: var(--soft);
+}
+.mode b {
+  display: block;
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+.mode p {
+  font-size: 13px;
+  color: var(--muted);
+}
+.librarylist {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0;
+}
+.help {
+  max-width: 760px;
+}
+.help h2 {
+  margin: 28px 0 12px;
+}
+.help p {
+  margin-bottom: 12px;
+}
+.help li {
+  line-height: 1.9;
+}
+dialog {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 28px;
+  background: var(--bg);
+  color: var(--ink);
+  width: min(680px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+}
+dialog::backdrop {
+  background: #16291f55;
+}
+.editgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 20px 0;
+}
+.editgrid input {
+  width: 100%;
+}
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: white;
+  border-radius: 10px;
+  padding: 13px 22px;
+  z-index: 100;
+  max-width: 90vw;
+  font-size: 14px;
+}
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 20px;
+  min-height: 20px;
+}
+.busy {
+  position: fixed;
+  inset: 0;
+  background: #f4f0e7ee;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.busy .panel {
+  min-width: 320px;
+}
+.busy p {
+  margin-top: 16px;
+}
+kbd {
+  font-size: 11px;
+  font-family: inherit;
+  opacity: 0.7;
+}
+.hidden {
+  display: none !important;
+}
+@media (max-width: 1000px) {
+  .main {
+    padding: 28px;
+  }
+  .nav {
+    width: 176px;
+    padding: 28px 14px;
+  }
+  .learn {
+    gap: 26px;
+    grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+  }
+  .hero {
+    gap: 24px;
+  }
+  .answer {
+    gap: 8px;
+  }
+  .datum b {
+    font-size: 18px;
+  }
+}
+@media (max-width: 720px) {
+  .app {
+    display: block;
+  }
+  .nav {
+    height: auto;
+    width: 100%;
+    position: static;
+    padding: 14px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+    border-right: 0;
+  }
+  .brand {
+    margin: 0 auto 0 0;
+  }
+  .brand b {
+    font-size: 24px;
+  }
+  .brand small,
+  .navfooter {
+    display: none;
+  }
+  .nav a.item {
+    padding: 10px;
+    font-size: 13px;
+  }
+  .main {
+    padding: 22px 18px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    margin-top: 0;
+  }
+  .heroart {
+    display: none;
+  }
+  .hero h1 {
+    font-size: 38px;
+  }
+  .learn {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .learn .portrait {
+    max-width: 260px;
+    margin: auto;
+  }
+  .photo-label {
+    text-align: center;
+  }
+  .answer {
+    margin-top: 14px;
+  }
+  .modegrid {
+    gap: 8px;
+  }
+  .mode {
+    padding: 16px 10px;
+  }
+  .mode b {
+    font-size: 16px;
+  }
+  .top {
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .top h1 {
+    font-size: 30px;
+  }
+  .metrics {
+    gap: 8px;
+  }
+  .metric b {
+    font-size: 27px;
+  }
+  .metric span {
+    display: block;
+    font-size: 12px;
+  }
+  .editgrid {
+    grid-template-columns: 1fr;
+  }
+  .recallhint {
+    padding: 10px 0;
+  }
+  .roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+.answer .datum.studentNo,.answer .datum.assessmentAddress,.answer .datum.other{grid-column:1/-1}.datum.studentNo b{font-family:Arial,sans-serif;font-size:21px;white-space:nowrap}.datum.assessmentAddress b,.datum.other b{font-size:20px;line-height:1.6;overflow-wrap:anywhere}
+.overview-mode .app{display:block}.overview-mode .nav{width:100%;height:auto;position:static;flex-direction:row;align-items:center;flex-wrap:wrap;padding:8px 16px;gap:4px;border-right:0;border-bottom:1px solid var(--line)}.overview-mode .nav .brand{margin:0 14px 0 0}.overview-mode .nav .brand small{display:none}.overview-mode .nav .brand b{font-size:22px}.overview-mode .nav a.item{min-height:44px;padding:10px 12px;font-size:14px}.overview-mode .navfooter{display:none}.overview-mode .main{padding:20px;max-width:none}.overview-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.overview-top h1{font-size:30px;letter-spacing:0}.overview-top p{font-size:13px}.overview-density{font-size:13px;display:flex;align-items:center;gap:8px}.overview-density select,.photo-state select{min-height:44px;min-width:80px;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:6px}.overview-filters{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 14px}.overview-filters summary{min-height:44px;padding:12px 0;cursor:pointer;font-size:14px;font-weight:600}.facet-row{border:0;padding:4px 0 8px;margin:0;display:flex;flex-wrap:wrap;gap:6px;min-width:0}.facet-row legend{float:left;width:74px;font-size:13px;padding-top:14px}.facet-choices{display:flex;flex:1;min-width:0;flex-wrap:wrap;gap:6px}.facet-choice{display:inline-flex;min-height:44px;align-items:center;gap:5px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px;cursor:pointer;background:var(--paper)}.facet-choice.selected{background:var(--soft);border-color:var(--green);color:var(--green)}.facet-choice input{accent-color:var(--green);margin:0}.facet-choice small{font-size:12px;color:inherit}.province-mode{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}.province-mode button,.overview-actions button,.overview-search button,#overview-photo-dialog>button{min-height:44px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 12px;color:var(--ink);font-size:13px}.province-mode [aria-pressed=true]{background:var(--green);color:white;border-color:var(--green)}.overview-more{border-top:1px solid var(--line)}.photo-state{font-size:13px}.filter-hint,.overview-summary,.range-note{font-size:13px;line-height:1.7;color:var(--muted);margin:8px 0}.overview-search{display:flex;align-items:end;gap:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--line)}.overview-search label{display:flex;flex-direction:column;gap:5px;font-size:13px;flex:1;min-width:160px}.overview-search input{width:100%;min-height:44px;max-width:none;border:1px solid var(--line);border-radius:6px;padding:9px 12px;background:white}.overview-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:12px 0;font-size:13px}.overview-actions{display:flex;flex-wrap:wrap;gap:6px}.overview-actions button:first-child{border-color:var(--green);color:var(--green)}.overview-actions button:nth-child(2){background:var(--green);color:white;border-color:var(--green)}.overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;align-items:start}.overview-grid.comfortable{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}.overview-card{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:block;padding:0;text-align:left;color:var(--ink)}.overview-card:hover{border-color:var(--green)}.overview-portrait{display:flex;aspect-ratio:4/5;align-items:center;justify-content:center;background:var(--soft);overflow:hidden}.overview-portrait img{display:block;width:100%;height:100%;object-fit:contain}.overview-caption{display:flex;flex-direction:column;gap:3px;padding:8px;font-size:12px;line-height:1.6}.overview-caption strong,.overview-caption>span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.overview-caption strong{font-size:14px}.no-photo{font-size:13px;color:var(--muted)}.overview-empty{grid-column:1/-1;padding:32px;text-align:center}.overview-card:focus-visible{outline-offset:1px}#overview-photo-dialog{max-width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 24px);border:1px solid var(--line);border-radius:10px;padding:18px;background:var(--paper);color:var(--ink)}#overview-photo-content img{display:block;width:100%;height:min(50dvh,460px);object-fit:contain;margin:12px auto}#overview-photo-content h2{font-size:24px}#overview-photo-content p{overflow-wrap:anywhere;margin-top:8px}#overview-photo-dialog::backdrop{background:#15251e88}@media(max-width:560px){.overview-mode .main{padding:12px}.overview-mode .nav{padding:6px 10px;gap:2px}.overview-mode .nav .brand{display:none}.overview-mode .nav a.item{font-size:13px;padding:10px}.overview-top{align-items:start}.overview-top h1{font-size:26px}.overview-top p{max-width:230px}.overview-density{flex-direction:column;gap:3px}.facet-row legend{width:100%;float:none;padding-top:8px}.overview-filters{padding:6px 10px}.overview-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}.overview-caption{padding:6px}.overview-actions button{flex:1}.overview-actions{width:100%}.overview-toolbar{align-items:start}.overview-search button{width:100%}}
+
+.plan-summary,.plan-edit{margin:18px 0;padding:18px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}.plan-summary h2{font-size:21px;overflow-wrap:anywhere}.plan-summary p{font-size:14px;margin-top:8px}.plan-meter{display:block;width:100%;height:20px;accent-color:var(--green);margin:14px 0}.plan-edit summary{min-height:44px;cursor:pointer;font-weight:600}.plan-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}.plan-form label{font-size:14px;display:flex;flex-direction:column;gap:6px}.plan-form input,.plan-form textarea{width:100%;min-height:44px;border:1px solid var(--line);padding:9px;border-radius:6px;background:white;color:var(--ink)}.plan-notes{grid-column:1/-1;font-size:13px}.plan-actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.plan-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.plan-group{border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:14px;min-width:0}.plan-group.complete{border-left:5px solid var(--green)}.plan-group.current{outline:2px solid #bd8a40;outline-offset:1px}.plan-group h3{font-size:17px}.plan-state{color:var(--green);font-size:13px;margin:8px 0}.plan-members{font-size:14px;min-height:48px;overflow-wrap:anywhere}.plan-group>div{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.plan-group button{min-height:44px;padding:8px 10px;background:var(--paper);border:1px solid var(--line);border-radius:6px;font-size:13px;color:var(--ink)}#study-plan-select{max-width:100%}@media(max-width:560px){.plan-form{grid-template-columns:1fr}.plan-groups{grid-template-columns:1fr}.plan-actions .btn{flex:1}}
+
+</style></head><body><div class="app"><aside class="nav"><a href="#home" class="brand"><small>年度照片考核</small><b>识生</b></a><a class="item" data-nav="overview" href="#overview">照片总览</a><a class="item" data-nav="home" href="#home">分组学习</a><a class="item" data-nav="plan" href="#plan">学习进度</a><a class="item" data-nav="exam" href="#exam">五人模拟考核</a><a class="item" data-nav="roster" href="#roster">考核名单</a><a class="item" data-nav="library" href="#library">考核材料</a><a class="item" data-nav="help" href="#help">使用说明</a><a class="item" data-nav="support" href="#support">联系与说明</a><div class="navfooter"><span>按计划完成分组学习。</span><span>学习进度自动保存在本机。</span><span style="margin-top:16px">Leven · 3.0.0</span><span>QQ：27040542</span></div></aside><main class="main" id="main"><p>正在读取考核材料…</p></main></div><input type="file" id="folder" webkitdirectory multiple hidden><input type="file" id="backup" accept=".json,application/json" hidden><dialog id="editor"></dialog><div id="toast" class="toast hidden" role="status"></div><div id="busy" class="busy hidden" role="status"><div class="panel"><h2>正在整理照片</h2><p id="busytext">请稍候</p></div></div><dialog id="confirm-dialog" aria-label="确认切换练习"><p></p><div class="actions"><button type="button" class="btn" value="continue">继续</button><button type="button" class="btn secondary" value="cancel">取消</button></div></dialog><script id="seed" type="application/json">[]</script><script>const PRODUCT_INFO={"author":"Leven","contact":{"label":"QQ","value":"27040542"},"workbenchVersion":"0.2.0","pluginVersion":"3.0.0","disclaimer":[{"title":"发布方不获取学生资料","body":"识生在当前浏览器中运行。程序只读取使用者主动导入的本机文件，用于名册管理、照片关联和练习；发布方 Leven 不通过程序获取、接收或保存学生姓名、照片、考核材料及练习资料。"},{"title":"本机处理的实现方式","body":"单文件程序包含运行资源；导入的学生资料和学习记录保存在当前浏览器的本机数据库中。识生练习区禁止外部网络连接；识生通过隔离页面只接收年度考核名单、照片及上级信息表中的本次考核答案，不接收身份证、银行卡、联系方式或谈话记录。练习进度保存在本机，不进入学生评价。"},{"title":"备份与设备管理","body":"导出的完整备份含有学生资料，请放在受控的本机位置，避免自动同步到云盘或误发他人。更换电脑、浏览器、文件位置、更新软件或清理浏览器前，先备份并在新环境核对恢复结果。浏览器数据清理、设备故障、恶意软件和他人访问设备仍可能造成资料丢失或泄露。"},{"title":"使用责任与免责声明","body":"请仅处理已获授权的资料，遵循所在单位的资料管理要求，并人工核对导入匹配、统计与练习答案。工具辅助个人工作，不代替正式业务认定或学生评价。使用者应妥善管理设备与备份；发布方不为超出软件功能与合理控制范围的设备故障、浏览器清理或使用者自行传播资料作出结果保证。本说明不排除法律规定应承担的责任。"},{"title":"联系与支持","body":"联系 Leven：QQ 27040542，可反馈使用问题。联系时只提供版本、使用环境、操作步骤和去除学生信息后的报错文字；请勿发送学生名单、照片、证件、联系方式或原始台账。程序不会自动附带或发送资料。"}]};
+let hostPort=null;
+const waiting=new Map();
+function hostSave(state) {
+  return new Promise((resolve,reject)=>{
+    const requestId=uid();
+    const timeout=setTimeout(()=>{waiting.delete(requestId);reject(new Error("保存尚未确认，请重试或返回考核材料导出备份"));},15000);
+    waiting.set(requestId,{resolve,reject,timeout});
+    const library=state.libraries.find(x=>x.id==="workbench");
+    hostPort.postMessage({type:"save",requestId,state:{progress:library?.progress||{},session:library?.session||null,exams:library?.exams||[],settings:state.settings,signatures:state.linkedSignatures||{},studyPlans:state.studyPlans||[],activePlanId:state.activePlanId||""}});
+  });
+}
+function localConfirm(message) {
+  return new Promise(resolve=>{
+    const dialog=document.getElementById("confirm-dialog");
+    dialog.querySelector("p").textContent=message;
+    dialog.returnValue="";
+    // The practice iframe intentionally disallows form submissions.
+    // Close the dialog explicitly so confirmation also works inside its sandbox.
+    dialog.onclick=event=>{
+      const button=event.target.closest("button[value]");
+      if(button && dialog.contains(button))dialog.close(button.value);
+    };
+    dialog.onclose=()=>{dialog.onclick=null;dialog.onclose=null;resolve(dialog.returnValue==="continue");};
+    dialog.showModal();
+  });
+}
+async function linkedBoot() {
+  window.addEventListener("message",function initialise(event){
+    if(event.source!==window.parent || event.data?.type!=="shisheng:init" || !event.ports[0] || hostPort)return;
+    hostPort=event.ports[0];
+    hostPort.onmessage=event=>{
+      const message=event.data;
+      if(message?.type!=="saved")return;
+      const pending=waiting.get(message.requestId);
+      if(pending){clearTimeout(pending.timeout);waiting.delete(message.requestId);message.ok?pending.resolve():pending.reject(new Error("本机保存失败"));}
+    };
+    const saved=event.data.state||{};
+    app=fresh();app.active="workbench";
+    app.libraries=[{id:"workbench",name:event.data.label||"年度考核名单",rows:event.data.rows,progress:saved.progress||{},session:saved.session||null,exams:saved.exams||[],updated:Date.now()}];
+    app.settings={className:"",order:"sequence",scope:"full",...saved.settings};
+    if(!app.settings.orderChosen)app.settings.order="sequence";
+    app.studyPlans=cleanStudyPlans(saved.studyPlans,event.data.rows.map(r=>r.id));app.activePlanId=saved.activePlanId||"";
+    app.linkedSignatures=saved.signatures||{};
+    if(app.settings.className && !rows().some(s=>s.className===app.settings.className))app.settings.className="";
+    app.settings.filters=cleanOverviewFilters(saved.settings?.filters||{classes:app.settings.className?[app.settings.className]:[]});
+    view="overview";render();
+  });
+  window.parent.postMessage({type:"shisheng:ready"},"*");
+}
+
+"use strict";
+const SEED = JSON.parse(document.getElementById("seed").textContent);
+/* OVERVIEW_MODEL */
+/* STUDY_PLAN */
+const FIELDS = STUDY_FIELDS;
+const SCOPES = { full: "全部考核项", name: "姓名", className: "班级" };
+const fresh = () => ({
+  version: 2,
+  active: "demo",
+  libraries: [],
+  demoProgress: {},
+  demoSession: null,
+  studyPlans: [],activePlanId:"",settings: { className: "", order: "sequence", orderChosen:false,scope: "full" },
+});
+let interacting = false,
+  pendingSaves = 0;
+let app = fresh(),
+  dbase = null,
+  urls = new Map(),
+  view = "home",
+  query = "",
+  rosterFilter = "all",
+  editing = null,
+  importTarget = null,
+  saving = Promise.resolve(),
+  storageError = "",
+  busy = false;
+const $ = (s) => document.querySelector(s);
+const esc = (x) =>
+  String(x ?? "").replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ],
+  );
+const uid = () =>
+  crypto.randomUUID?.() ||
+  Date.now().toString(36) + Math.random().toString(36).slice(2);
+const shuffle = (a) => {
+  const b = [...a];
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+};
+const lib = () => app.libraries.find((x) => x.id === app.active) || null;
+const rows = () =>
+  lib()?.rows ||
+  SEED.map((s) => ({
+    ...s,
+    id: "demo:" + s.id,
+    needyLabel: s.needy ? "贫困" : "非困难",
+    psychLabel: s.psychFocus ? "心理关注" : "无关注",
+    sure: true,
+    issues: [],
+    rel: "演示名册",
+    photo: s.photo,
+  }));
+const progress = () => lib()?.progress || app.demoProgress;
+const session = () => lib()?.session || (!lib() ? app.demoSession : null);
+function setSession(s) {
+  if (lib()) lib().session = s;
+  else app.demoSession = s;
+}
+const pending = () => rows().filter((s) => !s.sure);
+const eligible = (scope = "full") => filterOverview(rows(),app.settings.filters).filter(s=>(s.readyScopes||(s.sure?["full","name","className"]:[])).includes(scope));
+const fieldSet = (scope) =>
+  scope === "full" ? FIELDS : FIELDS.filter(([key]) => key === scope);
+const caption = (s) =>
+  FIELDS.map(([k]) => s[k])
+    .filter(Boolean)
+    .join(" · ");
+const signature = (s) => JSON.stringify(FIELDS.map(([k]) => s[k]));
+const photoKey = (libraryId, rowId) => libraryId + ":" + rowId;
+const photoURL = (s) => s.photo || urls.get(photoKey(app.active, s.id)) || "";
+const picture = (s, lazy = false) =>
+  `<div class="portrait"><img src="${esc(photoURL(s))}" alt="学生照片" loading="${lazy ? "lazy" : "eager"}"></div>`;
+const finished = (s) => !s || s.stage === "done";
+const record = (s) => progress()[s.id] || {};
+function needsReview(s) {
+ const result=record(s)[app.settings.scope];return result?.last==="miss"&&fieldSet(app.settings.scope).some(([key])=>result.missed?.includes(key));
+}
+function showToast(msg) {
+  $("#toast").textContent = msg;
+  $("#toast").classList.remove("hidden");
+  clearTimeout(showToast.t);
+  showToast.t = setTimeout(() => $("#toast").classList.add("hidden"), 4500);
+}
+function busyUI(message) {
+  busy = !!message;
+  $("#busy").classList.toggle("hidden", !busy);
+  $("#busytext").textContent = message || "";
+}
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const r = indexedDB.open("shisheng-v2", 1);
+    r.onupgradeneeded = () => {
+      r.result.createObjectStore("app");
+      r.result.createObjectStore("photos");
+    };
+    r.onsuccess = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+  });
+}
+function readStore(store, key) {
+  return new Promise((resolve, reject) => {
+    const r = dbase.transaction(store).objectStore(store).get(key);
+    r.onsuccess = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+  });
+}
+function transaction(state, photoWrites = [], photoDeletes = []) {
+  return new Promise((resolve, reject) => {
+    if (hostPort) { hostSave(state).then(resolve, reject); return; }
+    if (!dbase) return reject(new Error("浏览器未提供本机存储"));
+    const tx = dbase.transaction(["app", "photos"], "readwrite");
+    tx.objectStore("app").put(state, "current");
+    const p = tx.objectStore("photos");
+    photoWrites.forEach(([k, b]) => p.put(b, k));
+    photoDeletes.forEach((k) => p.delete(k));
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+    tx.onabort = () => reject(tx.error || new Error("保存被中断"));
+  });
+}
+function persist() {
+  pendingSaves++;
+  paintSave();
+  const snapshot = structuredClone(hostPort ? {...app,libraries:app.libraries.map(({rows,...library})=>library)} : app);
+  saving = saving
+    .catch(() => {})
+    .then(() => transaction(snapshot))
+    .then(() => {
+      storageError = "";
+      paintSave();
+      return true;
+    })
+    .catch((e) => {
+      storageError =
+        "本次更改未保存：" + e.message + "。请导出备份后再关闭页面。";
+      paintSave();
+      showToast(storageError);
+      return false;
+    })
+    .finally(() => {
+      pendingSaves--;
+      paintSave();
+    });
+  return saving;
+}
+function paintSave() {
+  const box = $("#save-status");
+  if (box) {
+    box.textContent =
+      storageError ||
+      (pendingSaves
+        ? "正在保存本次进度…"
+        : "考核材料已锁定 · 练习进度已保存在本机");
+    box.classList.toggle("error", !!storageError);
+  }
+}
+async function install(next, writes = [], deletes = []) {
+  await saving;
+  await transaction(next, writes, deletes);
+  app = next;
+  storageError = "";
+}
+async function loadPhotos() {
+  urls.forEach(URL.revokeObjectURL);
+  urls.clear();
+  const current = lib();
+  if (!current) return;
+  for (const s of current.rows) {
+    const b = await readStore("photos", photoKey(current.id, s.id));
+    if (b) urls.set(photoKey(current.id, s.id), URL.createObjectURL(b));
+    else {
+      s.sure = false;
+      s.issues = ["照片副本缺失，请更新此名册"];
+    }
+  }
+}
+function move(route) {
+  view=["overview","home","plan","exam","learn","roster","library","help","support"].includes(route)?route:"home";
+  render();window.scrollTo(0,0);
+}
+function selectors() {
+ return `<p class="range-note">练习范围：${esc(filterDescription(app.settings.filters))} <a href="#overview">调整筛选</a></p><div class="controls"><label class="field">练习内容<select id="learn-scope">${Object.entries(SCOPES).map(([k,v])=>`<option value="${k}" ${app.settings.scope===k?'selected':''}>${v}</option>`).join('')}</select></label><label class="field">分组顺序<select id="order"><option value="random" ${app.settings.order==='random'?'selected':''}>随机分组（保存分组结果）</option><option value="sequence" ${app.settings.order==='sequence'?'selected':''}>固定顺序（按信息表顺序）</option></select></label></div>`;
+}
+function source() {
+  return lib() ? esc(lib().name) : "演示名册 · 24 人";
+}
+function warning() {
+  return pending().length
+    ? `<div class="notice">${pending().length} 条待核对，暂不进入学习和模考。<a href="#roster" data-pending>查看待核对名单</a></div>`
+    : "";
+}
+/* OVERVIEW_UI */
+/* STUDY_UI */
+function home() {
+ const plan=currentStudyPlan(),run=session(),all=eligible(app.settings.scope),good=all.filter(s=>record(s)[app.settings.scope]?.last==='good').length;
+ return `<div class="top"><h1>分组学习</h1><span class="source">${source()}</span></div>${warning()}<section class="panel"><h2>${plan?(completedGroups(plan).length===plan.groups.length?`本计划全部 ${plan.groups.length} 组已学习`:`学习第 ${plan.cursor} 组，共 ${plan.groups.length} 组`):'当前范围无可学习学生'}</h2>${plan?`<p class="muted">当前计划：${esc(plan.name)}</p>`:''}<p class="muted">默认按信息表原顺序分组，每组最多 6 人。完成练习后自动记录进度，复习记录不会重新排列分组。</p><div class="actions">${!finished(run)?`<button class="btn" data-action="continue">继续未完成的${run.kind==='exam'?'模考':'学习'}</button>`:''}<button class="btn ${!finished(run)?'secondary':''}" data-action="start-learn" ${!plan?'disabled':''}>${plan?`${completedGroups(plan).includes(plan.cursor)?"复习":"开始学习"}第 ${plan.cursor} 组`:'开始分组学习'}</button><a class="btn secondary" href="#plan">查看或调整学习进度</a></div>${selectors()}</section><div class="metrics"><div class="metric"><b>${plan?completedGroups(plan).length:0}<small> / ${plan?.groups.length||0}</small></b><span>本计划已学习组数</span></div><div class="metric"><b>${good}<small> / ${all.length}</small></b><span>${SCOPES[app.settings.scope]}：最近一次答题全部正确人数</span></div><div class="metric"><b>${all.filter(needsReview).length}</b><span>本练习范围待复习人数</span></div></div><div class="panel"><h2>学习与自测流程</h2><p>先查看本组照片及考核信息，再隐藏答案进行回忆；查看答案后勾选未答对的项目并提交。当前考核内容为姓名、班级、家庭住址、是否贫困生、心理情况。</p><div class="actions"><button class="btn secondary" data-action="review" ${!all.some(needsReview)?'disabled':''}>复习未答对的项目</button><a class="btn secondary" href="#exam">进入五人模拟考核</a></div></div>`;
+}
+async function startLearn(reviewOnly = false,selectedPlan=null,number=null) {
+  if(!finished(session())&&!await localConfirm("开始本组将结束当前未完成的练习。已保存的答题记录保留。是否继续？"))return;
+  const plan=selectedPlan||(reviewOnly?ensureStudyPlan(true):currentStudyPlan());
+  if(!plan)return;
+  const group=number||plan.cursor||nextStudyGroup(plan);
+  const ids=plan.groups[group-1];if(!ids?.length){showToast("当前计划没有可学习分组。");return;}
+  plan.cursor=group;plan.started=[...new Set([...plan.started,group])];plan.updatedAt=new Date().toISOString();app.activePlanId=plan.id;
+  setSession({kind:"learn",scope:plan.scope,stage:"study",ids:[...ids],queue:[],index:0,revealed:false,missed:[],results:[],retries:{},reviewOnly,planId:plan.id,planGroup:group});
+  if(!await persist())return;move("learn");
+}
+async function startExam() {
+  if (
+    !finished(session()) &&
+    !await localConfirm("开始模考将结束当前未完成的学习。已保存的答题记录保留。是否继续？")
+  )
+    return;
+  const ids = shuffle(eligible(app.settings.scope))
+    .slice(0, 5)
+    .map((s) => s.id);
+  if (!ids.length) return;
+  setSession({
+    kind: "exam",
+    scope: app.settings.scope,
+    stage: "recall",
+    ids,
+    queue: ids,
+    index: 0,
+    revealed: false,
+    missed: [],
+    results: [],
+    retries: {},
+  });
+  await persist();
+  move("learn");
+}
+async function studyNext() {
+  const run = session(),
+    id = run.ids[run.index];
+  const p = progress()[id] || (progress()[id] = {});
+  p.viewedScopes=[...new Set([...(p.viewedScopes||[]),run.scope])];
+  if(run.scope==="full"){p.viewed = true;p.rounds = (p.rounds || 0) + 1;}
+  run.index++;
+  if (run.index >= run.ids.length) {
+    run.stage = "recall";
+    run.queue = [...run.ids];
+    run.index = 0;
+  }
+  await persist();
+  render();
+}
+function answers(s, scope, interactive = false, missed = []) {
+  return `<div class="answer">${fieldSet(scope)
+    .map(([k, label]) =>
+      interactive
+        ? `<label class="datum ${k} ${missed.includes(k) ? "miss" : ""}"><small><input type="checkbox" data-missed="${k}" ${missed.includes(k) ? "checked" : ""}>${label} · 勾选未答对项目</small><b>${esc(s[k])}</b></label>`
+        : `<div class="datum ${k}"><small>${label}</small><b>${esc(s[k])}</b></div>`,
+    )
+    .join("")}</div>`;
+}
+function learnView() {
+  const run = session();
+  if (!run)
+    return `<div class="empty"><h2>当前没有进行中的学习</h2><a class="btn" href="#home">返回分组学习</a></div>`;
+  if (run.stage === "done") return resultsView(run);
+  const id = (run.stage === "study" ? run.ids : run.queue)[run.index],
+    s = rows().find((s) => s.id === id);
+  if (!s)
+    return `<div class="empty"><h2>当前考核名单中未找到该学生</h2><a href="#home">返回分组学习</a></div>`;
+  const studying = run.stage === "study";
+  return `<div class="top"><div><span class="eyebrow">${run.kind === "exam" ? "五人模拟考核 · " + SCOPES[run.scope] : studying ? "第一步 · 查看考核信息" : "第二步 · 隐藏答案自测"}</span><p class="muted" style="font-size:13px;margin-top:8px">${run.planGroup?`第 ${run.planGroup} 组 · `:""}${studying ? `${run.index + 1} / ${run.ids.length} 人` : run.kind === "exam" ? `${run.index + 1} / ${run.queue.length} 人` : `${run.index + 1} / ${run.queue.length} 次自测（错项可能追加练习）`}</p></div><a class="btn secondary small" href="#home">暂停并返回</a></div><div class="progress"><span style="width:${(run.index / (studying ? run.ids.length : run.queue.length)) * 100}%"></span></div><div class="learn"><div>${picture(s)}<p class="photo-label">${studying ? "查看照片及本次学习内容。" : "请根据照片回答本次考核内容。"}</p></div><div>${
+    studying
+      ? `<h2>查看学生考核信息</h2><p class="muted" style="margin-top:8px">${run.scope==="full"?"查看并记忆下列全部考核信息。":"本轮学习内容："+SCOPES[run.scope]+"。"}</p>${answers(s, run.scope)}<div class="actions"><button class="btn" data-action="study-next">${run.index + 1 === run.ids.length ? "本组信息查看完成，开始自测" : "查看下一位学生"} <kbd>空格</kbd></button></div>`
+      : !run.revealed
+        ? `<div class="recallhint"><h2>请先作答，再查看答案</h2><p class="muted">${run.scope === "full" ? "请回答全部考核项，查看答案后标记未答对的项目。" : "本轮考核内容为" + (run.scope === "name" ? "姓名" : "班级") + "。"}</p><div class="pills">${fieldSet(
+            run.scope,
+          )
+            .map(([, label]) => `<span class="pill">${label}</span>`)
+            .join(
+              "",
+            )}</div></div><div class="actions"><button class="btn" data-action="reveal">查看答案 <kbd>空格</kbd></button><button class="link" data-action="skip">跳过并记录为未答对</button></div>`
+        : `<h2>核对作答结果</h2><p class="muted" style="margin-top:8px">请勾选漏答或答错的项目，然后提交本次结果。</p>${answers(s, run.scope, true, run.missed)}<div class="actions"><button class="btn" data-action="grade" id="grade-btn">${run.missed.length ? "提交漏项并继续" : "全部答对，提交并继续"} <kbd>回车</kbd></button><button class="btn secondary" data-action="forgot">本次全部未答对</button></div>`
+  }</div></div>`;
+}
+async function grade(missed, skip = false) {
+  const run = session();
+  if (!run || run.stage !== "recall") return;
+  const id = run.queue[run.index];
+  const p = progress()[id] || (progress()[id] = {});
+  p[run.scope] = {
+    attempts: (p[run.scope]?.attempts || 0) + 1,
+    last: missed.length ? "miss" : "good",
+    missed: [...missed],
+    at: Date.now(),
+  };
+  run.results.push({ id, missed: [...missed], skip });
+  if (
+    run.kind === "learn" &&
+    missed.length &&
+    !skip &&
+    !run.retries[id] &&
+    run.queue.length - run.index - 1 >= 2
+  ) {
+    run.retries[id] = 1;
+    run.queue.splice(run.index + 3, 0, id);
+  }
+  run.index++;
+  run.revealed = false;
+  run.missed = [];
+  if (run.index >= run.queue.length) {
+    run.stage = "done";
+    if(run.kind==="learn"&&run.planId){const index=app.studyPlans.findIndex(p=>p.id===run.planId);if(index>=0)app.studyPlans[index]=completeStudyGroup(app.studyPlans[index],run.planGroup,run.ids);}
+    if (run.kind === "exam") {
+      const history = lib()
+        ? lib().exams || (lib().exams = [])
+        : app.demoExams || (app.demoExams = []);
+      history.unshift({
+        at: Date.now(),
+        scope: run.scope,
+        results: structuredClone(run.results),
+      });
+      history.splice(20);
+    }
+  }
+  await persist();
+  render();focusPracticeAction();
+}
+function resultsView(run) {
+  const final = new Map(run.results.map((r) => [r.id, r]));
+  const good = [...final.values()].filter((r) => !r.missed.length).length;
+  return `<div class="result"><span class="eyebrow">${run.kind === "exam" ? "模考结束 · " + SCOPES[run.scope] : "本组学习已完成"}</span><h1 style="margin-top:18px">${good} / ${run.ids.length} 人${run.scope === "full" ? "全部答对" : "答对"}</h1><p class="muted">${good === run.ids.length ? "本次练习全部答对。" : "未答对项目已记录，可继续学习或安排复习。"}${run.kind === "exam" ? " 这是本轮自评结果，不换算正式考核分数。" : ""}</p><ul class="resultlist">${run.ids
+    .map((id) => {
+      const s = rows().find((x) => x.id === id),
+        r = final.get(id);
+      return `<li><b>${esc(s?.name || "学生")}</b><span class="${r?.missed.length ? "error" : "muted"}">${r?.missed.length ? "待复习项目：" + r.missed.map((k) => FIELDS.find((x) => x[0] === k)?.[1]).join("、") : "全部答对"}</span></li>`;
+    })
+    .join(
+      "",
+    )}</ul><div class="actions">${run.kind === "exam" ? `<button class="btn" data-action="start-exam">重新抽取模考学生</button><a class="btn secondary" href="#exam">调整考核范围</a>` : `${run.planId&&app.studyPlans.some(p=>p.id===run.planId&&!nextStudyGroup(p))?'<a class="btn" href="#plan">本计划已完成，查看学习进度</a>':'<button class="btn" data-action="start-learn">学习下一组</button>'}<button class="btn secondary" data-action="review">复习未答对项目</button>`}<a class="link" href="#home">返回分组学习</a></div></div>`;
+}
+function examView() {
+  const history = lib()?.exams || (!lib() ? app.demoExams : []) || [];
+  return `<div class="top"><h1>五人模拟考核</h1><span class="source">${source()}</span></div><p class="muted">随机抽取最多 5 名学生进行口答自测，请先选择考核内容。</p>${warning()}<div class="modegrid">${Object.entries(
+    SCOPES,
+  )
+    .map(
+      ([key, label]) =>
+        `<button class="mode ${app.settings.scope === key ? "on" : ""}" data-scope="${key}"><b>${label}</b><p>${key === "full" ? "姓名、班级、家庭住址、是否贫困生、心理情况" : "仅记录该项目的作答结果"}</p></button>`,
+    )
+    .join(
+      "",
+    )}</div><p class="range-note">抽取范围：${esc(filterDescription(app.settings.filters))} <a href="#overview">调整组合筛选</a></p><div class="actions"><button class="btn" data-action="start-exam" ${!eligible(app.settings.scope).length ? "disabled" : ""}>抽取 ${Math.min(5, eligible(app.settings.scope).length)} 人并开始模考</button></div>${eligible(app.settings.scope).length < 5 ? '<p class="muted" style="margin-top:15px">当前范围不足 5 人，将抽取全部可用学生。</p>' : ""}<h2 style="margin-top:42px">最近的模考</h2>${
+    history.length
+      ? `<ul class="resultlist">${history
+          .slice(0, 6)
+          .map(
+            (h) =>
+              `<li><span>${new Date(h.at).toLocaleDateString("zh-CN")} · ${SCOPES[h.scope]}</span><span>${h.results.filter((r) => !r.missed.length).length} / ${h.results.length} 人答对</span></li>`,
+          )
+          .join("")}</ul>`
+      : '<p class="muted" style="margin-top:16px">完成一轮后，结果会保存在这里。</p>'
+  }`;
+}
+function rosterView() {
+  const list = rows().filter(
+    (s) =>
+      (rosterFilter !== "pending" || !s.sure) &&
+      (!query || [caption(s), s.studentNo, s.rel].join(" ").includes(query)),
+  );
+  return `<div class="top"><h1>考核名单</h1><span class="source">${rows().length} 人 · ${source()}</span></div><div class="row"><input type="search" id="search" aria-label="搜索名册" placeholder="搜索姓名、班级或原文件名" value="${esc(query)}"><button class="btn small ${rosterFilter === "all" ? "soft" : "secondary"}" data-filter="all">全部</button><button class="btn small ${rosterFilter === "pending" ? "warn" : "secondary"}" data-filter="pending">待核对 · ${pending().length}</button></div>${warning()}<div class="roster">${list.map((s) => `<article class="student">${picture(s, true)}<div class="info"><h3>${esc(s.name || "待确认姓名")}</h3><p>${esc(s.className)} · ${esc(s.assessmentAddress||s.hometown)}</p><p>是否贫困生：${esc(s.needyLabel)} · 心理情况：${esc(s.psychLabel)}</p><p class="${s.sure ? "muted" : "error"}">${s.sure ? (record(s).full?.last === "good" ? "最近一次全部答对" : record(s).viewed ? "已查看全部考核信息" : "尚未学习") : esc(s.issues.join("；"))}</p>${lib() ? `<button class="btn secondary small" data-edit="${esc(s.id)}">${s.sure ? "查看考核材料" : "查看缺项原因"}</button>` : ""}</div></article>`).join("")}</div>${!list.length ? '<div class="empty">没有符合条件的学生。</div>' : ""}`;
+}
+function libraryView() {
+ return `<div class="top"><h1>年度考核材料</h1></div><div class="panel"><h2>上级原表与照片为唯一答案来源</h2><p class="muted">当前材料已独立保存并锁定。练习记录和其他年度版本均不会改变本年度考核名单、答案或照片。</p><button class="btn" data-action="return-bench">返回考核材料与备份</button><p class="muted" style="margin-top:20px">在入口导出“考核完整备份”，同时保存本年度原表、照片、匹配及进度。上级更正材料时重新导入，已有版本仍保留。</p></div>`;
+}
+function helpView() {
+ return `<article class="help"><h1>识生使用说明</h1><h2>1. 筛选学习对象</h2><p>照片下显示姓名、班级、家庭住址。班级、省份、贫困情况、心理情况可以组合筛选。同一条件内多选时，符合任一选项即可；不同条件之间，必须同时符合。省份支持仅显示或排除所选项，由每位老师自行选择。省份从家庭住址识别，无法确定时单独列出，原表内容保持不变。</p><h2>2. 按固定分组学习</h2><p>默认按信息表原顺序分组，每组最多 6 人。分组和组内顺序保存后保持不变，答题结果不会重新排列学生。需要随机顺序时，可自行切换为随机分组；再次打开时继续使用已保存的分组。</p><h2>3. 查看和调整进度</h2><p>在“学习进度”查看各组成员、完成状态及下一次学习组号。完成整组自测后自动记录进度，也可手动标记单组、补记已学习至第几组、设置每日组数和备注。手动标记不修改答题成绩。不同考核范围、筛选条件和分组方式分别保存计划，切换后可选择原计划继续学习。</p><h2>4. 完成自测或模拟考核</h2><p>查看照片并作答，显示答案后勾选未答对的项目，再提交结果。全部考核项为姓名、班级、家庭住址、是否贫困生、心理情况。仅练姓名或班级时，成绩单独记录。五人模拟考核随机抽取当前筛选中的学生，不改变学习分组；不足 5 人时使用当前全部可练习学生。</p><h2>5. 保存考核材料与进度</h2><p>上级原表和照片是唯一考核依据，各年度材料独立保存。已锁定的考核材料独立于学习记录。入口的“考核完整备份”保存原表、照片、匹配结果、学习计划和练习记录。</p><h2>快捷键</h2><p>空格：查看下一位学生或显示答案。回车：显示答案后提交当前结果，勾选漏项后同样有效。在输入框、其他按钮或确认窗口中，快捷键不提交答题结果。</p></article>`;
+}
+function supportView() {
+ return `<article class="help"><h1>联系与说明</h1><div class="panel"><h2>Leven · 识生 ${esc(PRODUCT_INFO.pluginVersion)}</h2><p>联系与支持：<strong style="user-select:all">QQ ${esc(PRODUCT_INFO.contact.value)}</strong></p><p>可选中号码复制。请勿发送学生资料。</p></div>${PRODUCT_INFO.disclaimer.map(p=>`<h2>${esc(p.title)}</h2><p>${esc(p.body)}</p>`).join("")}</article>`;
+}
+function render() {
+  const content =
+    view === "overview"
+      ? overviewView()
+      : view === "home"
+      ? home()
+      : view === "plan"
+        ? studyPlanView()
+      : view === "exam"
+        ? examView()
+        : view === "learn"
+          ? learnView()
+          : view === "roster"
+            ? rosterView()
+            : view === "library"
+              ? libraryView()
+              : view === "support" ? supportView() : helpView();
+  $("#main").innerHTML =
+    content + '<p id="save-status" class="status" aria-live="polite"></p>';
+  document
+    .querySelectorAll("[data-nav]")
+    .forEach((a) =>
+      a.classList.toggle(
+        "on",
+        a.dataset.nav === (view === "learn" ? "home" : view),
+      ),
+    );
+  document.body.classList.toggle("overview-mode",view==="overview");
+  paintSave();
+}
+function parseFilename(rel) {
+  const base = rel
+    .split("/")
+    .pop()
+    .replace(/\.[^.]+$/, "");
+  const parts = base.split("_").map((x) => x.trim());
+  if (parts.length === 7 && parts[6] === "") parts.pop();
+  let s = {
+    name: "",
+    className: "",
+    studentNo: "",
+    hometown: "",
+    needyLabel: "非困难",
+    psychLabel: "无关注",
+    issues: [],
+    confirmed: false,
+  };
+  if (parts.length === 6) {
+    [s.className, s.name, s.studentNo] = parts;
+    s.needyLabel = parts[3] || "非困难";
+    s.psychLabel = parts[4] || "无关注";
+    s.hometown = parts[5];
+    if (!/^[0-9]{8,12}$/.test(s.studentNo)) s.issues.push("学号格式需核对");
+    if (
+      !["", "贫困", "困难", "非困难", "非贫困", "否", "无"].includes(parts[3])
+    )
+      s.issues.push("请核对贫困字段原文");
+    if (
+      !["", "心理重点关注", "心理关注", "无关注", "无", "否"].includes(parts[4])
+    )
+      s.issues.push("请核对心理字段原文");
+  } else {
+    s.name = /^[\u3400-\u9fff·]{2,12}$/.test(base) ? base : "";
+    s.issues.push("文件名不是六段格式，请对照原文件核对");
+  }
+  if (!s.name) s.issues.push("姓名为空");
+  if (!s.className) s.issues.push("班级为空");
+  if (!s.hometown) s.issues.push("籍贯为空");
+  s.confirmed = !s.issues.length;
+  s.sure = s.confirmed;
+  return s;
+}
+function checkDuplicates(list) {
+  const counts = new Map();
+  list.forEach((s) => {
+    if (s.studentNo)
+      counts.set(s.studentNo, (counts.get(s.studentNo) || 0) + 1);
+  });
+  for (const s of list) {
+    s.issues = (s.issues || []).filter((x) => !x.startsWith("重复学号"));
+    if (s.studentNo && counts.get(s.studentNo) > 1)
+      s.issues.push("重复学号：" + s.studentNo + "，请保留正确记录或更正学号");
+    s.sure = !!s.confirmed && !s.issues.length;
+  }
+}
+function compress(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image(),
+      url = URL.createObjectURL(file);
+    image.onload = () => {
+      try {
+        const scale = Math.min(1, 720 / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        canvas
+          .getContext("2d")
+          .drawImage(image, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+          (blob) => {
+            URL.revokeObjectURL(url);
+            blob ? resolve(blob) : reject(new Error("压缩失败"));
+          },
+          "image/jpeg",
+          0.82,
+        );
+      } catch (e) {
+        URL.revokeObjectURL(url);
+        reject(e);
+      }
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("照片无法读取"));
+    };
+    image.src = url;
+  });
+}
+async function importFiles(files) {
+  if (!files.length) return;
+  const usable = files.filter((f) => {
+    const p = f.webkitRelativePath || f.name;
+    return (
+      !p.split("/").some((x) => x.startsWith(".") || x === "__MACOSX") &&
+      /\.(jpe?g|png|webp|gif|bmp)$/i.test(p)
+    );
+  });
+  if (!usable.length) {
+    showToast("没有找到可用照片，支持 JPG、PNG、WebP、GIF、BMP。");
+    return;
+  }
+  if (usable.length > 2000) {
+    showToast("单个名册最多支持 2000 张照片，请分成多个名册导入。");
+    return;
+  }
+  const current = app.libraries.find((l) => l.id === importTarget),
+    libraryId = current?.id || uid();
+  const root = (files[0].webkitRelativePath || "照片库/" + files[0].name).split(
+    "/",
+  )[0];
+  const oldByRel = new Map((current?.rows || []).map((s) => [s.rel, s]));
+  const oldByNo = new Map();
+  for (const s of current?.rows || []) {
+    if (s.studentNo) {
+      if (oldByNo.has(s.studentNo)) oldByNo.set(s.studentNo, null);
+      else oldByNo.set(s.studentNo, s);
+    }
+  }
+  const imported = [],
+    writes = [],
+    report = [],
+    nextProgress = {},
+    used = new Set();
+  busyUI("正在读取 0 / " + usable.length);
+  try {
+    await saving;
+    for (let i = 0; i < usable.length; i++) {
+      const f = usable[i],
+        path = f.webkitRelativePath || f.name,
+        rel = path.includes("/") ? path.split("/").slice(1).join("/") : path;
+      try {
+        const blob = await compress(f);
+        let parsed = parseFilename(rel);
+        const old = oldByRel.get(rel) || oldByNo.get(parsed.studentNo);
+        if (old?.manual && old.rel === rel)
+          parsed = {
+            ...parsed,
+            ...Object.fromEntries([
+              ...FIELDS.map(([k]) => [k, old[k]]),
+              ["studentNo", old.studentNo],
+            ]),
+            confirmed: true,
+            issues: [],
+            manual: true,
+          };
+        const reuse = old && !used.has(old.id),
+          id = reuse ? old.id : uid();
+        used.add(id);
+        const stamp = f.size + ":" + f.lastModified;
+        const s = { ...parsed, id, rel, stamp };
+        imported.push(s);
+        writes.push([photoKey(libraryId, id), blob]);
+        if (reuse && signature(old) === signature(s) && old.stamp === stamp)
+          nextProgress[id] = current.progress[old.id] || {};
+      } catch (e) {
+        const old = oldByRel.get(rel);
+        if (old && !used.has(old.id)) {
+          imported.push(old);
+          used.add(old.id);
+          nextProgress[old.id] = current.progress[old.id] || {};
+        }
+        report.push(rel + "：读取失败" + (old ? "，保留旧照片" : ""));
+      }
+      if (i % 10 === 0 || i === usable.length - 1)
+        busyUI(`正在读取 ${i + 1} / ${usable.length}`);
+    }
+    if (!writes.length) {
+      showToast("本次照片均未读取成功，原名册保持不变。");
+      alert(report.join("\n"));
+      return;
+    }
+    imported.sort((a, b) => a.rel.localeCompare(b.rel, "zh"));
+    checkDuplicates(imported);
+    const removed = (current?.rows || []).filter((s) => !used.has(s.id));
+    const changed = imported.filter(
+      (s) => current?.progress[s.id] && !nextProgress[s.id],
+    ).length;
+    report.unshift(
+      `读取成功 ${writes.length} 张；待核对 ${imported.filter((s) => !s.sure).length} 条。`,
+    );
+    if (current)
+      report.push(
+        `移出 ${removed.length} 条；${changed} 条因照片或答案变化需重新学习。`,
+      );
+    const next = structuredClone(app);
+    const l = {
+      id: libraryId,
+      name: current?.name || root,
+      rows: imported,
+      progress: nextProgress,
+      session: null,
+      exams: current?.exams || [],
+      updated: Date.now(),
+      report,
+      legacy: current?.legacy,
+    };
+    next.libraries = next.libraries.filter((x) => x.id !== libraryId).concat(l);
+    next.active = libraryId;
+    next.settings.className = "";
+    if (
+      current &&
+      !confirm(
+        `更新“${current.name}”：\n${report.join("\n")}\n\n确认替换当前名册吗？`,
+      )
+    )
+      return;
+    await install(
+      next,
+      writes,
+      removed.map((s) => photoKey(libraryId, s.id)),
+    );
+    await loadPhotos();
+    rosterFilter = imported.some((s) => !s.sure) ? "pending" : "all";
+    query = "";
+    move(rosterFilter === "pending" ? "roster" : "home");
+    showToast(report[0]);
+  } finally {
+    busyUI("");
+    importTarget = null;
+  }
+}
+function editStudent(id) {
+  const s = rows().find((s) => s.id === id);
+  if (!s || !lib()) return;
+  editing = id;
+  const dialog = $("#editor");
+  dialog.innerHTML = `<h2>核对词条</h2><p style="font-size:13px;overflow-wrap:anywhere;margin:12px 0">原文件：${esc(s.rel)}</p><p class="muted" style="font-size:13px">按文件名原文核对，贫困、心理留空会按“无”处理。</p><form id="edit-form"><div class="editgrid">${[...FIELDS, ["studentNo", "学号（仅用于区分记录，不背）"]].map(([k, label]) => `<label class="field">${label}<input type="text" name="${k}" value="${esc(s[k])}" ${["name", "className", "hometown"].includes(k) ? "required" : ""}></label>`).join("")}</div><div class="actions"><button class="btn" type="submit">确认并保存</button><button class="btn secondary" type="button" data-action="close-edit">取消</button></div></form>`;
+  dialog.showModal();
+}
+async function saveEdit(form) {
+  const s = lib().rows.find((x) => x.id === editing),
+    before = signature(s);
+  const data = new FormData(form);
+  const changes = {};
+  for (const [k] of [...FIELDS, ["studentNo"]])
+    changes[k] = String(data.get(k) || "").trim();
+  if (!changes.name || !changes.className || !changes.hometown) {
+    showToast("姓名、班级和籍贯需要填写。");
+    return;
+  }
+  Object.assign(s, changes);
+  s.needyLabel = s.needyLabel || "非困难";
+  s.psychLabel = s.psychLabel || "无关注";
+  s.confirmed = true;
+  s.manual = true;
+  s.issues = [];
+  checkDuplicates(lib().rows);
+  if (before !== signature(s)) {
+    delete lib().progress[s.id];
+    lib().session = null;
+  }
+  if (!(await persist())) return;
+  $("#editor").close();
+  render();
+  showToast(
+    s.sure ? "词条已保存，可以开始学习。" : "已保存，仍需处理重复学号。",
+  );
+}
+async function toDataURL(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+async function exportLibrary(id) {
+  busyUI("正在打包本机名册");
+  try {
+    await saving;
+    const l = app.libraries.find((x) => x.id === id);
+    const data = structuredClone(l);
+    for (const row of data.rows) {
+      const blob = await readStore("photos", photoKey(id, row.id));
+      if (!blob) throw new Error("照片缺失：" + row.rel);
+      row.image = await toDataURL(blob);
+    }
+    const blob = new Blob(
+      [
+        JSON.stringify({
+          format: "shisheng-backup",
+          version: 2,
+          library: data,
+        }),
+      ],
+      { type: "application/json" },
+    );
+    const url = URL.createObjectURL(blob),
+      a = document.createElement("a");
+    a.href = url;
+    a.download = l.name.replace(/[\\/:*?"<>|]/g, "_") + "-识生备份.json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    showToast("备份已导出，内含照片与学习进度。");
+  } finally {
+    busyUI("");
+  }
+}
+async function restoreBackup(file) {
+  if (!file) return;
+  busyUI("正在检查备份");
+  try {
+    if (file.size > 250 * 1024 * 1024)
+      throw new Error("备份超过 250 MB，请拆分名册后恢复");
+    const data = JSON.parse(await file.text());
+    if (
+      data.format !== "shisheng-backup" ||
+      data.version !== 2 ||
+      !data.library ||
+      !Array.isArray(data.library.rows) ||
+      !data.library.rows.length ||
+      data.library.rows.length > 2000
+    )
+      throw new Error("不是受支持的识生备份");
+    const raw = data.library;
+    const id = uid(),
+      list = [],
+      writes = [],
+      ids = new Set();
+    for (const r of raw.rows) {
+      if (
+        typeof r.id !== "string" ||
+        ids.has(r.id) ||
+        typeof r.image !== "string" ||
+        !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(r.image)
+      )
+        throw new Error("备份中的照片或记录格式无效");
+      ids.add(r.id);
+      const binary = atob(r.image.split(",")[1]),
+        bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0)),
+        b = new Blob([bytes], { type: r.image.slice(5, r.image.indexOf(";")) });
+      const clean = {
+        id: r.id,
+        rel: String(r.rel || ""),
+        studentNo: String(r.studentNo || ""),
+        confirmed: !!r.confirmed,
+        manual: !!r.manual,
+        issues: Array.isArray(r.issues) ? r.issues.map(String) : [],
+        stamp: String(r.stamp || ""),
+      };
+      FIELDS.forEach(([k]) => (clean[k] = String(r[k] || "")));
+      if (!clean.name || !clean.className || !clean.hometown) {
+        clean.confirmed = false;
+        clean.issues.push("备份词条不完整");
+      }
+      list.push(clean);
+      const bitmap = await createImageBitmap(b);
+      bitmap.close();
+      writes.push([photoKey(id, r.id), b]);
+    }
+    checkDuplicates(list);
+    const restoredProgress = {};
+    for (const row of list) {
+      const p = raw.progress?.[row.id];
+      if (!p || typeof p !== "object") continue;
+      const clean = {
+        viewed: !!p.viewed,
+        rounds: Number.isFinite(p.rounds) ? Math.max(0, p.rounds) : 0,
+      };
+      for (const scope of Object.keys(SCOPES)) {
+        const r = p[scope];
+        if (r && ["good", "miss"].includes(r.last))
+          clean[scope] = {
+            last: r.last,
+            attempts: Number.isFinite(r.attempts) ? Math.max(0, r.attempts) : 0,
+            at: Number.isFinite(r.at) ? r.at : 0,
+            missed: Array.isArray(r.missed)
+              ? r.missed.filter((k) =>
+                  fieldSet(scope).some(([key]) => key === k),
+                )
+              : [],
+          };
+      }
+      restoredProgress[row.id] = clean;
+    }
+    const name = String(raw.name || "恢复的名册");
+    const next = structuredClone(app);
+    let restoredSession = null;
+    const rs = raw.session;
+    if (
+      rs &&
+      ["learn", "exam"].includes(rs.kind) &&
+      ["study", "recall", "done"].includes(rs.stage) &&
+      Object.keys(SCOPES).includes(rs.scope) &&
+      Array.isArray(rs.ids) &&
+      rs.ids.length <= 6 &&
+      rs.ids.every((x) => ids.has(x)) &&
+      Array.isArray(rs.queue) &&
+      rs.queue.length <= 12 &&
+      rs.queue.every((x) => ids.has(x)) &&
+      Number.isInteger(rs.index) &&
+      rs.index >= 0 &&
+      rs.index <= (rs.stage === "study" ? rs.ids.length : rs.queue.length) &&
+      Array.isArray(rs.results)
+    ) {
+      restoredSession = {
+        ...rs,
+        missed: Array.isArray(rs.missed)
+          ? rs.missed.filter((k) => FIELDS.some(([key]) => key === k))
+          : [],
+        retries: rs.retries && typeof rs.retries === "object" ? rs.retries : {},
+        results: rs.results
+          .filter((r) => r && ids.has(r.id) && Array.isArray(r.missed))
+          .map((r) => ({
+            id: r.id,
+            missed: r.missed.filter((k) => FIELDS.some(([key]) => key === k)),
+            skip: !!r.skip,
+          })),
+      };
+      if (
+        rs.stage !== "done" &&
+        rs.index === (rs.stage === "study" ? rs.ids.length : rs.queue.length)
+      )
+        restoredSession = null;
+    }
+    const exams = (Array.isArray(raw.exams) ? raw.exams : [])
+      .slice(0, 20)
+      .filter(
+        (h) =>
+          h &&
+          Number.isFinite(h.at) &&
+          Object.keys(SCOPES).includes(h.scope) &&
+          Array.isArray(h.results),
+      )
+      .map((h) => ({
+        at: h.at,
+        scope: h.scope,
+        results: h.results
+          .filter(
+            (r) => r && typeof r.id === "string" && Array.isArray(r.missed),
+          )
+          .slice(0, 5)
+          .map((r) => ({
+            id: r.id,
+            missed: r.missed.filter((k) =>
+              fieldSet(h.scope).some(([key]) => key === k),
+            ),
+            skip: !!r.skip,
+          })),
+      }));
+    next.libraries.push({
+      id,
+      name,
+      rows: list,
+      progress: restoredProgress,
+      legacy:
+        raw.legacy && typeof raw.legacy === "object" ? raw.legacy : undefined,
+      session: restoredSession,
+      exams,
+      updated: Date.now(),
+      report: ["从备份恢复为独立名册，原有名册未覆盖。"],
+    });
+    next.active = id;
+    next.settings.className = "";
+    await install(next, writes);
+    await loadPhotos();
+    move("home");
+    showToast("备份已恢复，照片和学习进度已载入。");
+  } finally {
+    busyUI("");
+  }
+}
+async function migrateLegacy() {
+  if (app.legacyChecked) return;
+  let old;
+  try {
+    old = await new Promise((resolve, reject) => {
+      const r = indexedDB.open("shisheng-folder");
+      r.onupgradeneeded = () => {
+        r.transaction.abort();
+        resolve(null);
+      };
+      r.onerror = () =>
+        r.error?.name === "AbortError" ? resolve(null) : reject(r.error);
+      r.onsuccess = () => resolve(r.result);
+    });
+    if (
+      old?.objectStoreNames.contains("kv") &&
+      old.objectStoreNames.contains("photos")
+    ) {
+      const get = (store, key) =>
+        new Promise((resolve, reject) => {
+          const r = old.transaction(store).objectStore(store).get(key);
+          r.onsuccess = () => resolve(r.result);
+          r.onerror = () => reject(r.error);
+        });
+      const meta = await get("kv", "meta");
+      if (meta?.files?.length) {
+        const id = uid(),
+          migrated = [],
+          writes = [];
+        for (const f of meta.files) {
+          const blob = await get("photos", f.rel);
+          if (!blob) continue;
+          const row = {
+            ...f,
+            id: uid(),
+            needyLabel: f.needyLabel || (f.needy ? "贫困" : "非困难"),
+            psychLabel: f.psychLabel || (f.psychFocus ? "心理关注" : "无关注"),
+            confirmed: !!f.sure,
+            manual: !!f.fixed,
+            issues: f.issues || [],
+            stamp: "",
+          };
+          migrated.push(row);
+          writes.push([photoKey(id, row.id), blob]);
+        }
+        if (migrated.length) {
+          checkDuplicates(migrated);
+          let legacy = {};
+          try {
+            legacy = JSON.parse(
+              localStorage.getItem("shisheng-html-v1") || "{}",
+            );
+          } catch {}
+          const next = structuredClone(app);
+          next.libraries.push({
+            id,
+            name: meta.name || "旧版名册",
+            rows: migrated,
+            progress: {},
+            exams: [],
+            session: null,
+            updated: Date.now(),
+            legacy,
+            report: [
+              "已读取旧版照片和词条；旧熟练度已保留为历史，不计入新版成绩。",
+            ],
+          });
+          next.active = id;
+          next.legacyChecked = true;
+          await install(next, writes);
+          return;
+        }
+      }
+    }
+    app.legacyChecked = true;
+    await persist();
+  } finally {
+    old?.close();
+  }
+}
+async function useLibrary(id) {
+  await saving;
+  app.active = id;
+  app.settings.className = "";
+  await loadPhotos();
+  await persist();
+  query = "";
+  rosterFilter = "all";
+  move("home");
+}
+const actions = {
+  "return-bench": () => hostPort?.postMessage({type:"return"}),
+  "start-learn": () => startLearn(false),
+  review: () => startLearn(true),
+  continue: () => move("learn"),
+  "start-exam": startExam,
+  "study-next": studyNext,
+  reveal: () => {
+    const s = session();
+    if (s?.stage === "recall") {
+      s.revealed = true;
+      persist();
+      render();
+    }
+  },
+  grade: () => {
+    if (session()?.revealed) return grade(session().missed);
+  },
+  forgot: () => grade(fieldSet(session().scope).map(([k]) => k)),
+  skip: () =>
+    grade(
+      fieldSet(session().scope).map(([k]) => k),
+      true,
+    ),
+  "import-new": () => {
+    importTarget = null;
+    $("#folder").value = "";
+    $("#folder").click();
+  },
+  restore: () => {
+    $("#backup").value = "";
+    $("#backup").click();
+  },
+  demo: () => useLibrary("demo"),
+  "close-edit": () => $("#editor").close(),
+};
+async function handleClick(event) {
+  if (busy) return;
+  if(await handleStudyClick(event))return;
+  if(await handleOverviewClick(event))return;
+  const link=event.target.closest('a[href^="#"]');
+  if(link){if(link.hasAttribute("data-pending"))rosterFilter="pending";move(link.getAttribute("href").slice(1));return;}
+  const editTarget=event.target.closest("[data-edit]");
+  if(editTarget){hostPort?.postMessage({type:"return",studentId:editTarget.dataset.edit});return;}
+  const action = event.target.closest("[data-action]");
+  if (action) {
+    await actions[action.dataset.action]?.();
+    return;
+  }
+  const scope = event.target.closest("[data-scope]");
+  if (scope) {
+    app.settings.scope = scope.dataset.scope;
+    persist();
+    render();
+    return;
+  }
+  const filter = event.target.closest("[data-filter]");
+  if (filter) {
+    rosterFilter = filter.dataset.filter;
+    render();
+    return;
+  }
+  if (event.target.closest("[data-pending]")) {
+    rosterFilter = "pending";
+    if (view === "roster") render();
+  }
+  const edit = event.target.closest("[data-edit]");
+  if (edit) {
+    editStudent(edit.dataset.edit);
+    return;
+  }
+  const use = event.target.closest("[data-use]");
+  if (use) {
+    await useLibrary(use.dataset.use);
+    return;
+  }
+  const update = event.target.closest("[data-update]");
+  if (update) {
+    importTarget = update.dataset.update;
+    $("#folder").value = "";
+    $("#folder").click();
+    return;
+  }
+  const exp = event.target.closest("[data-export]");
+  if (exp) await exportLibrary(exp.dataset.export);
+}
+function reportError(e) {
+  console.error(e);
+  showToast("操作没有完成：" + e.message);
+}
+document.addEventListener("click", async (event) => {
+  if(event.target.closest('a[href^="#"]'))event.preventDefault();
+  if (interacting) return;
+  interacting = true;
+  try {
+    await handleClick(event);
+  } catch (e) {
+    reportError(e);
+  } finally {
+    interacting = false;
+  }
+});
+document.addEventListener("change", (event) => {
+  const el = event.target;
+  if(handleStudyChange(el))return;
+  if(handleOverviewChange(el))return;
+  if (el.id === "class-filter") {
+    app.settings.className = el.value;
+    app.settings.filters=cleanOverviewFilters({...app.settings.filters,classes:el.value?[el.value]:[]});
+    persist();
+    render();
+  }
+  if(el.id === "learn-scope"){app.settings.scope=el.value;persist();render();}
+  if (el.id === "order") {
+    app.settings.order = el.value;app.settings.orderChosen=true;
+    persist();render();
+  }
+  if (el.dataset.missed) {
+    const run = session();
+    if (!run || !run.revealed) return;
+    run.missed = [...document.querySelectorAll("[data-missed]:checked")].map(
+      (x) => x.dataset.missed,
+    );
+    el.closest(".datum").classList.toggle("miss", el.checked);
+    $("#grade-btn").innerHTML =
+      (run.missed.length ? "提交漏项并继续" : "全部答对，提交并继续") +
+      " <kbd>回车</kbd>";
+    persist();
+  }
+  if (el.id === "folder") importFiles([...el.files]).catch(reportError);
+  if (el.id === "backup") restoreBackup(el.files[0]).catch(reportError);
+});
+document.addEventListener("toggle",event=>{if(event.target.id==='overview-filter-panel')overviewFiltersOpen=event.target.open;},true);
+document.addEventListener("input", (event) => {
+  if(event.target.name==="cursor"&&event.target.closest("#study-plan-form"))event.target.dataset.edited="true";
+  if(event.target.id==='overview-search'){
+    const f=cleanOverviewFilters({...app.settings.filters,query:event.target.value});app.settings.filters=f;saveFilterChange();
+    const list=filterOverview(rows(),f);$('#overview-grid').innerHTML=overviewCards(list);$('#overview-count').textContent=`显示 ${list.length} / ${rows().length} 人 · 有照片 ${list.filter(x=>x.photo).length} 人`;$('.overview-summary').textContent=filterDescription(f);updateFacetCounts();for(const b of document.querySelectorAll('[data-overview-action="names"],[data-overview-action="full"]'))b.disabled=!list.some(r=>r.photo);
+  }
+  if (event.target.id === "search") {
+    query = event.target.value;
+    const position = event.target.selectionStart;
+    render();
+    $("#search").focus();
+    $("#search").setSelectionRange(position, position);
+  }
+});
+document.addEventListener("submit", (event) => {
+  if(event.target.id==="study-plan-form"){event.preventDefault();void saveStudyPlanForm(event.target);return;}
+  if (event.target.id === "edit-form") {
+    event.preventDefault();
+    saveEdit(event.target).catch(reportError);
+  }
+});
+document.addEventListener("keydown",async event=>{
+  if(view==="plan"&&event.key==="Enter"&&!event.isComposing&&!event.target.closest("textarea")&&event.target.closest("#study-plan-form")){event.preventDefault();await saveStudyPlanForm($("#study-plan-form"));return;}
+  if(view!=="learn")return;
+  const el=event.target,run=session();
+  const control=el.closest('textarea,[contenteditable=true],input:not([type=checkbox]):not([type=radio])')?'text':el.closest('select')?'select':el.closest('a')?'link':el.closest('input[type=checkbox],input[type=radio]')?'checkbox':el.closest('button')?'button':'none';
+  const action=practiceKeyAction({key:event.key,code:event.code,repeat:event.repeat,isComposing:event.isComposing,modified:event.ctrlKey||event.altKey||event.metaKey,blocked:interacting||busy||!!document.querySelector('dialog[open]'),control,missedControl:!!el.closest('[data-missed]'),buttonAction:el.closest('button')?.dataset.action},run);
+  if(!action)return;event.preventDefault();interacting=true;
+  try{if(action==='grade')await grade(run.missed);else if(action==='study-next')await studyNext();else actions.reveal();}catch(error){reportError(error);}finally{interacting=false;}
+});
+function focusPracticeAction(){const run=session();const action=run?.stage==='study'?'study-next':run?.stage==='recall'?(run.revealed?'grade':'reveal'):'start-learn';document.querySelector(`[data-action="${action}"]`)?.focus({preventScroll:true});}
+window.addEventListener("beforeunload", (event) => {
+  if (pendingSaves || busy) {
+    event.preventDefault();
+    event.returnValue = "";
+  }
+});
+window.addEventListener("hashchange", () => {
+  const requested = location.hash.replace(/^#\/?/, "");
+  view = ["overview", "home", "plan", "exam", "learn", "roster", "library", "help", "support"].includes(
+    requested,
+  )
+    ? requested
+    : "home";
+  render();
+  window.scrollTo(0, 0);
+});
+async function boot() {
+  try {
+    dbase = await openDB();
+    const saved = await readStore("app", "current");
+    if (saved?.version === 2) {
+      app = saved;
+      app.settings = {
+        className: "",
+        order: "random",
+        scope: "full",
+        ...saved.settings,
+      };
+    }
+    await migrateLegacy();
+    await loadPhotos();
+  } catch (e) {
+    storageError =
+      "本机数据未能完整读取：" +
+      e.message +
+      "。可先体验演示名册，请勿清理原浏览器数据。";
+  }
+  const requested = location.hash.replace(/^#\/?/, "");
+  view = ["overview", "home", "plan", "exam", "learn", "roster", "library", "help", "support"].includes(
+    requested,
+  )
+    ? requested
+    : "home";
+  render();
+}
+linkedBoot();
+</script></body></html>
