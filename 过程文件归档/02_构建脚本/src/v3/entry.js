@@ -8,6 +8,9 @@ import overviewModelSource from './overview-model.js?raw';
 import overviewUISource from './overview-ui.js?raw';
 import studyPlanSource from './study-plan.js?raw';
 import studyUISource from './study-ui.js?raw';
+import objectiveUISource from './objective-ui.js?raw';
+import {objectiveCommand} from './objective.js';
+import './game-element.js';
 const MAX=2*1024*1024;
 const esc=value=>String(value??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
 const button=(action,label,primary=false)=>`<button type="button" data-action="${action}" class="bp-button${primary?' bp-primary':''}">${label}</button>`;
@@ -26,13 +29,13 @@ beizhaopian-entry{display:block;margin:0 0 20px;color:var(--color-ink,#263f35)}
 class RecognitionEntry extends HTMLElement{
   connectedCallback(){
     this.active=true;this.loaded=false;this.sets=[];this.current=null;this.state=null;this.queue=Promise.resolve();this.message='';this.busy=false;
-    this.addEventListener('click',this.click);this.addEventListener('change',this.change);
+    this.addEventListener('click',this.click);this.addEventListener('change',this.change);this.studyRequest=()=>{if(this.current)void this.openFrame();else this.showError('请先上传照片压缩包和考核信息表，再开始照片学习。');};this.addEventListener('recognition-study-request',this.studyRequest);
 
 
     try{this.channel=new BroadcastChannel('shisheng-annual-v3');this.channel.onmessage=()=>void this.load();}catch{this.channel={postMessage(){},close(){}};}
     void this.load();
   }
-  disconnectedCallback(){this.active=false;this.epoch=(this.epoch||0)+1;this.closeFrame();this.unsubscribe?.();this.channel?.close();this.removeEventListener('click',this.click);this.removeEventListener('change',this.change);}
+  disconnectedCallback(){this.active=false;this.epoch=(this.epoch||0)+1;this.closeFrame();this.unsubscribe?.();this.channel?.close();this.removeEventListener('click',this.click);this.removeEventListener('change',this.change);this.removeEventListener('recognition-study-request',this.studyRequest);}
   async load(){
     const epoch=this.epoch=(this.epoch||0)+1;
     try{await this.queue.catch(()=>{});const catalog=await readAnnual();const selected=catalog.sets.find(d=>d.id===catalog.active)||catalog.sets.at(-1)||null;const saved=selected?await readProgress(selected.id):null;
@@ -55,6 +58,7 @@ class RecognitionEntry extends HTMLElement{
     if(!this.active)return;
     const d=this.current,rows=this.rows(),count=rows.filter(x=>x.sure).length;
     this.innerHTML=style+`<section class="bp-card" aria-label="识生独立考核库"><div class="bp-top"><div><h2 class="bp-title">识生</h2><p class="bp-copy">上传年度照片包与信息表，核对后开始学习。</p></div>${d?button('open','打开识生',true):''}</div>${this.sets.length?`<label class="bp-label">考核年度与材料<select class="bp-input" aria-label="考核年度与材料">${this.sets.map(x=>`<option value="${esc(x.id)}" ${x.id===d?.id?'selected':''}>${esc(x.year)} 年 · ${esc(x.table.name)} · ${esc(new Date(x.restoredAt||x.lockedAt).toLocaleString('zh-CN'))}${x.restoredAt?' · 恢复副本':''}</option>`).join('')}</select></label><p class="bp-note">材料已锁定 · 考核 ${rows.length} 人 · 可练习 ${count} 人${count<rows.length?` · 缺照片 ${rows.length-count} 人`:''}。原表、照片与答案已锁定，学习记录独立保存。</p>`:''}<details class="bp-details bp-materials" ${!d?'open':''}><summary>${d?'导入年度考核材料':'上传考核材料'}</summary><form class="bp-upload"><label class="bp-label">考核年度<input class="bp-input" type="number" min="2000" max="2100" value="${new Date().getFullYear()}" aria-label="考核年度" required></label><div class="bp-fields" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))"><label class="bp-label">① 照片压缩包<input class="bp-input" type="file" accept=".zip" aria-label="照片压缩包" required></label><label class="bp-label">② 考核信息表<input class="bp-input" type="file" accept=".xls,.xlsx" aria-label="考核信息表" required></label></div><p class="bp-note">只需一个 ZIP 和一张 XLS / XLSX。考核答案只取自信息表，空白按“无”。导入后保存独立年度版本，已有材料保留。</p><div class="bp-actions"><button class="bp-button bp-primary" type="submit">匹配并预览</button></div></form><div class="bp-preview"></div></details>${d?`<details class="bp-details"><summary>查看考核资料与备份</summary><p class="bp-note">${esc(d.year)} 年 · 原始信息表：${esc(d.table.name)} · 工作表：${esc(d.table.sheet)} · 原始照片包：${esc(d.photoPackage?.name||'备份内照片')}<br>本考核库的原表、照片、匹配结果和进度均保存在本机，可同时保存学习计划与进度。上级更正材料请重新导入，原版本保留。</p><input class="bp-input" type="search" aria-label="检索考核资料" placeholder="姓名、学号、班级"><div class="bp-list"></div><div class="bp-readonly"></div><div class="bp-actions">${button('export','导出当前考核完整备份')}${button('restore','恢复考核备份')}</div></details>`:`<div class="bp-actions">${button('restore','恢复考核备份')}</div>`}<details class="bp-details"><summary>旧版资料与备份</summary><p class="bp-note">旧版识生资料保持原位。可查看旧版名册、导出原有备份，或下载2.0兼容程序。旧文件名资料不自动转换为本年度考核答案。</p>${button('legacy','打开旧版资料')}</details><input type="file" accept=".json" aria-label="选择年度考核备份" hidden><p class="bp-copy bp-error" role="alert">${esc(this.message)}</p></section><div class="bp-frame-slot"></div>`;
+    this.insertAdjacentHTML('afterbegin','<recognition-game></recognition-game>');
     for(const b of this.querySelectorAll('button'))b.disabled=!this.loaded;
     this.querySelector('.bp-upload').onsubmit=e=>{e.preventDefault();void this.previewUpload();};
     this.querySelector('[aria-label="选择年度考核备份"]').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)void this.previewBackup(f);};
@@ -95,10 +99,16 @@ class RecognitionEntry extends HTMLElement{
         const data=event.data;
         if(!active || !this.active) return;
         if(data?.type==='return') { this.closeFrame(); this.querySelector('.bp-materials')?.scrollIntoView({block:'start'}); return; }
+        if(data?.type==='objective'){
+          try{await this.queue;const quiz=await objectiveCommand(dataset,rows,data.command);const saved=await readProgress(dataset.id);if(this.current?.id===dataset.id)this.state=saved?.state;port.postMessage({type:'objective-result',requestId:data.requestId,ok:true,quiz,progress:saved?.state?.progress||{},studyPlans:saved?.state?.studyPlans||[]});}
+          catch(error){port.postMessage({type:'objective-result',requestId:data.requestId,ok:false,error:error.message});}return;
+        }
         if(data?.type!=='save')return;
         try {
           if(typeof data.requestId!=='string' || JSON.stringify(data.state).length>MAX)throw Error('无效进度');
-          const sanitized=reconcilePracticeState({...data.state,signatures:state.signatures},rows);
+          const latest=await readProgress(dataset.id);
+          const sanitized=reconcilePracticeState({...data.state,signatures:state.signatures,objective:latest?.state?.objective},rows);
+          sanitized.objective=latest?.state?.objective||{quizzes:[]};
           await this.saveState(dataset,sanitized);
           if(active){status.textContent='练习进度已保存在本机';port.postMessage({type:'saved',requestId:data.requestId,ok:true});}
         }catch{if(active){status.textContent='保存失败，请重试或导出练习备份';port.postMessage({type:'saved',requestId:data.requestId,ok:false});}}
@@ -108,7 +118,7 @@ class RecognitionEntry extends HTMLElement{
     };
     window.addEventListener('message',receive);
     this.frameCleanup=()=>{active=false;clearTimeout(timeout);port?.close();window.removeEventListener('message',receive);};
-    frame.srcdoc=pluginHtml.replace('/* OVERVIEW_MODEL */',()=>overviewModelSource.replace(/^export /gm,'')).replace('/* OVERVIEW_UI */',()=>overviewUISource).replace('/* STUDY_PLAN */',()=>studyPlanSource.replace(/^import .*;$/gm,'').replace(/^export /gm,'')).replace('/* STUDY_UI */',()=>studyUISource).replace(/<head>/i,`<head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'">`);
+    frame.srcdoc=pluginHtml.replace('/* OVERVIEW_MODEL */',()=>overviewModelSource.replace(/^export /gm,'')).replace('/* OVERVIEW_UI */',()=>overviewUISource).replace('/* STUDY_PLAN */',()=>studyPlanSource.replace(/^import .*;$/gm,'').replace(/^export /gm,'')).replace('/* STUDY_UI */',()=>studyUISource).replace('/* OBJECTIVE_UI */',()=>objectiveUISource).replace(/<head>/i,`<head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'">`);
     slot.scrollIntoView({block:'start'});
     slot.querySelector('[data-action="close"]').focus({preventScroll:true});
   }

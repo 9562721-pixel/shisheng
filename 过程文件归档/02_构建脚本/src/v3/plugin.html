@@ -720,7 +720,7 @@ kbd {
 
 /* Photo information visibility: native mixed-state master plus independent photo controls. */
 .overview-info-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:8px}.overview-master{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-size:14px;font-weight:600;cursor:pointer}.overview-master input{appearance:none;position:relative;flex:none;width:46px;height:28px;border:1px solid #a8b3a2;border-radius:20px;background:#d9dfd4;cursor:pointer;margin:0}.overview-master input::before{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 3px #263e3233}.overview-master input:checked{background:var(--green);border-color:var(--green)}.overview-master input:checked::before{left:21px}.overview-master input:indeterminate{background:#afbd91;border-color:#798c5d}.overview-master input:indeterminate::before{left:12px}.overview-master input:disabled{opacity:.45;cursor:default}#overview-info-status{font-size:13px;color:var(--green)}.overview-info-hint{font-size:13px;color:var(--muted);flex-basis:100%}.overview-image{position:relative}.overview-toggle{display:block;width:100%;padding:0;background:transparent;color:inherit}.overview-toggle:focus-visible{outline-offset:-3px}.overview-zoom{position:absolute;right:4px;top:4px;display:grid;place-items:center;min-width:28px;min-height:28px;padding:0;border:1px solid #cad4c5;border-radius:6px;background:#fffefaed;color:var(--green)}.overview-zoom:hover{background:#fffefa}.overview-info-slot{min-height:84px}.overview-hidden-hint{min-height:84px;display:flex;align-items:center;justify-content:center;margin:0;padding:8px;color:var(--muted);font-size:12px}.overview-caption[hidden],.overview-hidden-hint[hidden]{display:none!important}.overview-card.info-visible{border-color:#9aaa91}
-</style></head><body><div class="app"><aside class="nav"><a href="#home" class="brand"><small>年度照片考核</small><b>识生</b></a><a class="item" data-nav="overview" href="#overview">照片总览</a><a class="item" data-nav="home" href="#home">分组学习</a><a class="item" data-nav="plan" href="#plan">学习进度</a><a class="item" data-nav="exam" href="#exam">五人模拟考核</a><a class="item" data-nav="roster" href="#roster">考核名单</a><a class="item" data-nav="library" href="#library">考核材料</a><a class="item" data-nav="help" href="#help">使用说明</a><a class="item" data-nav="support" href="#support">联系与说明</a><div class="navfooter"><span>按计划完成分组学习。</span><span>学习进度自动保存在本机。</span><span style="margin-top:16px">Leven · 3.1.1</span><span>QQ：27040542</span></div></aside><main class="main" id="main"><p>正在读取考核材料…</p></main></div><input type="file" id="folder" webkitdirectory multiple hidden><input type="file" id="backup" accept=".json,application/json" hidden><dialog id="editor"></dialog><div id="toast" class="toast hidden" role="status"></div><div id="busy" class="busy hidden" role="status"><div class="panel"><h2>正在整理照片</h2><p id="busytext">请稍候</p></div></div><dialog id="confirm-dialog" aria-label="确认切换练习"><p></p><div class="actions"><button type="button" class="btn" value="continue">继续</button><button type="button" class="btn secondary" value="cancel">取消</button></div></dialog><script id="seed" type="application/json">[]</script><script>const PRODUCT_INFO={"author":"Leven","contact":{"label":"QQ","value":"27040542"},"workbenchVersion":"0.2.0","pluginVersion":"3.1.1","disclaimer":[{"title":"发布方不获取学生资料","body":"识生在当前浏览器中运行。程序只读取使用者主动导入的本机文件，用于名册管理、照片关联和练习；发布方 Leven 不通过程序获取、接收或保存学生姓名、照片、考核材料及练习资料。"},{"title":"本机处理的实现方式","body":"单文件程序包含运行资源；导入的学生资料和学习记录保存在当前浏览器的本机数据库中。识生练习区禁止外部网络连接；识生通过隔离页面只接收年度考核名单、照片及上级信息表中的本次考核答案，不接收身份证、银行卡、联系方式或谈话记录。练习进度保存在本机，不进入学生评价。"},{"title":"备份与设备管理","body":"导出的完整备份含有学生资料，请放在受控的本机位置，避免自动同步到云盘或误发他人。更换电脑、浏览器、文件位置、更新软件或清理浏览器前，先备份并在新环境核对恢复结果。浏览器数据清理、设备故障、恶意软件和他人访问设备仍可能造成资料丢失或泄露。"},{"title":"使用责任与免责声明","body":"请仅处理已获授权的资料，遵循所在单位的资料管理要求，并人工核对导入匹配、统计与练习答案。工具辅助个人工作，不代替正式业务认定或学生评价。使用者应妥善管理设备与备份；发布方不为超出软件功能与合理控制范围的设备故障、浏览器清理或使用者自行传播资料作出结果保证。本说明不排除法律规定应承担的责任。"},{"title":"联系与支持","body":"联系 Leven：QQ 27040542，可反馈使用问题。联系时只提供版本、使用环境、操作步骤和去除学生信息后的报错文字；请勿发送学生名单、照片、证件、联系方式或原始台账。程序不会自动附带或发送资料。"}]};
+</style></head><body><div class="app"><aside class="nav"><a href="#home" class="brand"><small>年度照片考核</small><b>识生</b></a><a class="item" data-nav="overview" href="#overview">照片总览</a><a class="item" data-nav="home" href="#home">分组学习</a><a class="item" data-nav="plan" href="#plan">学习进度</a><a class="item" data-nav="exam" href="#exam">五人模拟考核</a><a class="item" data-nav="roster" href="#roster">考核名单</a><a class="item" data-nav="library" href="#library">考核材料</a><a class="item" data-nav="help" href="#help">使用说明</a><a class="item" data-nav="support" href="#support">联系与说明</a><div class="navfooter"><span>按计划完成分组学习。</span><span>学习进度自动保存在本机。</span><span style="margin-top:16px">Leven · 3.2.0</span><span>QQ：27040542</span></div></aside><main class="main" id="main"><p>正在读取考核材料…</p></main></div><input type="file" id="folder" webkitdirectory multiple hidden><input type="file" id="backup" accept=".json,application/json" hidden><dialog id="editor"></dialog><div id="toast" class="toast hidden" role="status"></div><div id="busy" class="busy hidden" role="status"><div class="panel"><h2>正在整理照片</h2><p id="busytext">请稍候</p></div></div><dialog id="confirm-dialog" aria-label="确认切换练习"><p></p><div class="actions"><button type="button" class="btn" value="continue">继续</button><button type="button" class="btn secondary" value="cancel">取消</button></div></dialog><script id="seed" type="application/json">[]</script><script>const PRODUCT_INFO={"author":"Leven","contact":{"label":"QQ","value":"27040542"},"workbenchVersion":"0.2.0","pluginVersion":"3.2.0","disclaimer":[{"title":"发布方不获取学生资料","body":"识生在当前浏览器中运行。程序只读取使用者主动导入的本机文件，用于名册管理、照片关联和练习；发布方 Leven 不通过程序获取、接收或保存学生姓名、照片、考核材料及练习资料。"},{"title":"本机处理的实现方式","body":"单文件程序包含运行资源；导入的学生资料和学习记录保存在当前浏览器的本机数据库中。识生练习区禁止外部网络连接；识生通过隔离页面只接收年度考核名单、照片及上级信息表中的本次考核答案，不接收身份证、银行卡、联系方式或谈话记录。练习进度保存在本机，不进入学生评价。"},{"title":"备份与设备管理","body":"导出的完整备份含有学生资料，请放在受控的本机位置，避免自动同步到云盘或误发他人。更换电脑、浏览器、文件位置、更新软件或清理浏览器前，先备份并在新环境核对恢复结果。浏览器数据清理、设备故障、恶意软件和他人访问设备仍可能造成资料丢失或泄露。"},{"title":"使用责任与免责声明","body":"请仅处理已获授权的资料，遵循所在单位的资料管理要求，并人工核对导入匹配、统计与练习答案。工具辅助个人工作，不代替正式业务认定或学生评价。使用者应妥善管理设备与备份；发布方不为超出软件功能与合理控制范围的设备故障、浏览器清理或使用者自行传播资料作出结果保证。本说明不排除法律规定应承担的责任。"},{"title":"联系与支持","body":"联系 Leven：QQ 27040542，可反馈使用问题。联系时只提供版本、使用环境、操作步骤和去除学生信息后的报错文字；请勿发送学生名单、照片、证件、联系方式或原始台账。程序不会自动附带或发送资料。"}]};
 let hostPort=null;
 const waiting=new Map();
 function hostSave(state) {
@@ -753,9 +753,9 @@ async function linkedBoot() {
     hostPort=event.ports[0];
     hostPort.onmessage=event=>{
       const message=event.data;
-      if(message?.type!=="saved")return;
+      if(!["saved","objective-result"].includes(message?.type))return;
       const pending=waiting.get(message.requestId);
-      if(pending){clearTimeout(pending.timeout);waiting.delete(message.requestId);message.ok?pending.resolve():pending.reject(new Error("本机保存失败"));}
+      if(pending){clearTimeout(pending.timeout);waiting.delete(message.requestId);message.ok?pending.resolve(message):pending.reject(new Error(message.error||"本机保存失败"));}
     };
     const saved=event.data.state||{};
     app=fresh();app.active="workbench";
@@ -763,7 +763,7 @@ async function linkedBoot() {
     app.settings={className:"",order:"sequence",scope:"full",...saved.settings};
     if(!app.settings.orderChosen)app.settings.order="sequence";
     app.studyPlans=cleanStudyPlans(saved.studyPlans,event.data.rows.map(r=>r.id));app.activePlanId=saved.activePlanId||"";
-    app.linkedSignatures=saved.signatures||{};
+    app.linkedSignatures=saved.signatures||{};app.objectiveHistory=saved.objective?.quizzes||[];
     if(app.settings.className && !rows().some(s=>s.className===app.settings.className))app.settings.className="";
     app.settings.filters=cleanOverviewFilters(saved.settings?.filters||{classes:app.settings.className?[app.settings.className]:[]});
     view="overview";render();
@@ -973,7 +973,7 @@ function warning() {
 /* STUDY_UI */
 function home() {
  const plan=currentStudyPlan(),run=session(),all=eligible(app.settings.scope),good=all.filter(s=>record(s)[app.settings.scope]?.last==='good').length;
- return `<div class="top"><h1>分组学习</h1><span class="source">${source()}</span></div>${warning()}<section class="panel"><h2>${plan?(completedGroups(plan).length===plan.groups.length?`本计划全部 ${plan.groups.length} 组已学习`:`学习第 ${plan.cursor} 组，共 ${plan.groups.length} 组`):'当前范围无可学习学生'}</h2>${plan?`<p class="muted">当前计划：${esc(plan.name)}</p>`:''}<p class="muted">默认按信息表原顺序分组，每组最多 6 人。完成练习后自动记录进度，复习记录不会重新排列分组。</p><div class="actions">${!finished(run)?`<button class="btn" data-action="continue">继续未完成的${run.kind==='exam'?'模考':'学习'}</button>`:''}<button class="btn ${!finished(run)?'secondary':''}" data-action="start-learn" ${!plan?'disabled':''}>${plan?`${completedGroups(plan).includes(plan.cursor)?"复习":"开始学习"}第 ${plan.cursor} 组`:'开始分组学习'}</button><a class="btn secondary" href="#plan">查看或调整学习进度</a></div>${selectors()}</section><div class="metrics"><div class="metric"><b>${plan?completedGroups(plan).length:0}<small> / ${plan?.groups.length||0}</small></b><span>本计划已学习组数</span></div><div class="metric"><b>${good}<small> / ${all.length}</small></b><span>${SCOPES[app.settings.scope]}：最近一次答题全部正确人数</span></div><div class="metric"><b>${all.filter(needsReview).length}</b><span>本练习范围待复习人数</span></div></div><div class="panel"><h2>学习与自测流程</h2><p>先查看本组照片及考核信息，再隐藏答案进行回忆；查看答案后勾选未答对的项目并提交。当前考核内容为姓名、班级、家庭住址、是否贫困生、心理情况。</p><div class="actions"><button class="btn secondary" data-action="review" ${!all.some(needsReview)?'disabled':''}>复习未答对的项目</button><a class="btn secondary" href="#exam">进入五人模拟考核</a></div></div>`;
+ return `<div class="top"><h1>分组学习</h1><span class="source">${source()}</span></div>${warning()}<section class="panel"><h2>${plan?(completedGroups(plan).length===plan.groups.length?`本计划全部 ${plan.groups.length} 组已学习`:`学习第 ${plan.cursor} 组，共 ${plan.groups.length} 组`):'当前范围无可学习学生'}</h2>${plan?`<p class="muted">当前计划：${esc(plan.name)}</p>`:''}<p class="muted">默认按信息表原顺序分组，每组最多 6 人。完成练习后自动记录进度，复习记录不会重新排列分组。</p><div class="actions">${!finished(run)?`<button class="btn" data-action="continue">继续未完成的${run.kind==='exam'?'模考':'学习'}</button>`:''}<button class="btn ${!finished(run)?'secondary':''}" data-action="start-learn" ${!plan?'disabled':''}>${plan?`${completedGroups(plan).includes(plan.cursor)?"复习":"开始学习"}第 ${plan.cursor} 组`:'开始分组学习'}</button><a class="btn secondary" href="#plan">查看或调整学习进度</a></div>${selectors()}</section><div class="metrics"><div class="metric"><b>${plan?completedGroups(plan).length:0}<small> / ${plan?.groups.length||0}</small></b><span>本计划已学习组数</span></div><div class="metric"><b>${good}<small> / ${all.length}</small></b><span>${SCOPES[app.settings.scope]}：最近一次答题全部正确人数</span></div><div class="metric"><b>${all.filter(needsReview).length}</b><span>本练习范围待复习人数</span></div></div><div class="panel"><h2>学习与单选练习流程</h2><p>先查看本组照片及考核信息，再完成单选题；软件即时判分，错项自动记录。当前考核内容为姓名、班级、家庭住址、是否贫困生、心理情况。</p><div class="actions"><button class="btn secondary" data-action="review" ${!all.some(needsReview)?'disabled':''}>复习未答对的项目</button><a class="btn secondary" href="#exam">进入五人模拟考核</a></div></div>`;
 }
 async function startLearn(reviewOnly = false,selectedPlan=null,number=null) {
   if(!finished(session())&&!await localConfirm("开始本组将结束当前未完成的练习。已保存的答题记录保留。是否继续？"))return;
@@ -982,7 +982,7 @@ async function startLearn(reviewOnly = false,selectedPlan=null,number=null) {
   const group=number||plan.cursor||nextStudyGroup(plan);
   const ids=plan.groups[group-1];if(!ids?.length){showToast("当前计划没有可学习分组。");return;}
   plan.cursor=group;plan.started=[...new Set([...plan.started,group])];plan.updatedAt=new Date().toISOString();app.activePlanId=plan.id;
-  setSession({kind:"learn",scope:plan.scope,stage:"study",ids:[...ids],queue:[],index:0,revealed:false,missed:[],results:[],retries:{},reviewOnly,planId:plan.id,planGroup:group});
+  setSession({objectiveMode:true,kind:"learn",scope:plan.scope,stage:"study",ids:[...ids],queue:[],index:0,revealed:false,missed:[],results:[],retries:{},reviewOnly,planId:plan.id,planGroup:group});
   if(!await persist())return;move("learn");
 }
 async function startExam() {
@@ -996,7 +996,7 @@ async function startExam() {
     .map((s) => s.id);
   if (!ids.length) return;
   setSession({
-    kind: "exam",
+    objectiveMode:true,kind: "exam",
     scope: app.settings.scope,
     stage: "recall",
     ids,
@@ -1007,7 +1007,7 @@ async function startExam() {
     results: [],
     retries: {},
   });
-  await persist();
+  await beginObjective(session());
   move("learn");
 }
 async function studyNext() {
@@ -1021,6 +1021,7 @@ async function studyNext() {
     run.stage = "recall";
     run.queue = [...run.ids];
     run.index = 0;
+    if(run.objectiveMode){try{await beginObjective(run);}catch(error){run.stage='study';run.index=run.ids.length-1;throw error;}}
   }
   await persist();
   render();
@@ -1038,15 +1039,16 @@ function learnView() {
   const run = session();
   if (!run)
     return `<div class="empty"><h2>当前没有进行中的学习</h2><a class="btn" href="#home">返回分组学习</a></div>`;
+  if(run.objectiveId && run.stage!=="study")return objectiveView(run);
   if (run.stage === "done") return resultsView(run);
   const id = (run.stage === "study" ? run.ids : run.queue)[run.index],
     s = rows().find((s) => s.id === id);
   if (!s)
     return `<div class="empty"><h2>当前考核名单中未找到该学生</h2><a href="#home">返回分组学习</a></div>`;
   const studying = run.stage === "study";
-  return `<div class="top"><div><span class="eyebrow">${run.kind === "exam" ? "五人模拟考核 · " + SCOPES[run.scope] : studying ? "第一步 · 查看考核信息" : "第二步 · 隐藏答案自测"}</span><p class="muted" style="font-size:13px;margin-top:8px">${run.planGroup?`第 ${run.planGroup} 组 · `:""}${studying ? `${run.index + 1} / ${run.ids.length} 人` : run.kind === "exam" ? `${run.index + 1} / ${run.queue.length} 人` : `${run.index + 1} / ${run.queue.length} 次自测（错项可能追加练习）`}</p></div><a class="btn secondary small" href="#home">暂停并返回</a></div><div class="progress"><span style="width:${(run.index / (studying ? run.ids.length : run.queue.length)) * 100}%"></span></div><div class="learn"><div>${picture(s)}<p class="photo-label">${studying ? "查看照片及本次学习内容。" : "请根据照片回答本次考核内容。"}</p></div><div>${
+  return `<div class="top"><div><span class="eyebrow">${run.kind === "exam" ? "五人模拟考核 · " + SCOPES[run.scope] : studying ? "第一步 · 查看考核信息" : "第二步 · 旧版自评（历史）"}</span><p class="muted" style="font-size:13px;margin-top:8px">${run.planGroup?`第 ${run.planGroup} 组 · `:""}${studying ? `${run.index + 1} / ${run.ids.length} 人` : run.kind === "exam" ? `${run.index + 1} / ${run.queue.length} 人` : `${run.index + 1} / ${run.queue.length} 次自测（错项可能追加练习）`}</p></div><a class="btn secondary small" href="#home">暂停并返回</a></div><div class="progress"><span style="width:${(run.index / (studying ? run.ids.length : run.queue.length)) * 100}%"></span></div><div class="learn"><div>${picture(s)}<p class="photo-label">${studying ? "查看照片及本次学习内容。" : "请根据照片回答本次考核内容。"}</p></div><div>${
     studying
-      ? `<h2>查看学生考核信息</h2><p class="muted" style="margin-top:8px">${run.scope==="full"?"查看并记忆下列全部考核信息。":"本轮学习内容："+SCOPES[run.scope]+"。"}</p>${answers(s, run.scope)}<div class="actions"><button class="btn" data-action="study-next">${run.index + 1 === run.ids.length ? "本组信息查看完成，开始自测" : "查看下一位学生"} <kbd>空格</kbd></button></div>`
+      ? `<h2>查看学生考核信息</h2><p class="muted" style="margin-top:8px">${run.scope==="full"?"查看并记忆下列全部考核信息。":"本轮学习内容："+SCOPES[run.scope]+"。"}</p>${answers(s, run.scope)}<div class="actions"><button class="btn" data-action="study-next">${run.index + 1 === run.ids.length ? "本组信息查看完成，开始单选练习" : "查看下一位学生"} <kbd>空格</kbd></button></div>`
       : !run.revealed
         ? `<div class="recallhint"><h2>请先作答，再查看答案</h2><p class="muted">${run.scope === "full" ? "请回答全部考核项，查看答案后标记未答对的项目。" : "本轮考核内容为" + (run.scope === "name" ? "姓名" : "班级") + "。"}</p><div class="pills">${fieldSet(
             run.scope,
@@ -1060,7 +1062,7 @@ function learnView() {
 }
 async function grade(missed, skip = false) {
   const run = session();
-  if (!run || run.stage !== "recall") return;
+  if (!run || run.objectiveMode || run.stage !== "recall") return;
   const id = run.queue[run.index];
   const p = progress()[id] || (progress()[id] = {});
   p[run.scope] = {
@@ -1104,7 +1106,7 @@ async function grade(missed, skip = false) {
 function resultsView(run) {
   const final = new Map(run.results.map((r) => [r.id, r]));
   const good = [...final.values()].filter((r) => !r.missed.length).length;
-  return `<div class="result"><span class="eyebrow">${run.kind === "exam" ? "模考结束 · " + SCOPES[run.scope] : "本组学习已完成"}</span><h1 style="margin-top:18px">${good} / ${run.ids.length} 人${run.scope === "full" ? "全部答对" : "答对"}</h1><p class="muted">${good === run.ids.length ? "本次练习全部答对。" : "未答对项目已记录，可继续学习或安排复习。"}${run.kind === "exam" ? " 这是本轮自评结果，不换算正式考核分数。" : ""}</p><ul class="resultlist">${run.ids
+  return `<div class="result"><span class="eyebrow">${run.kind === "exam" ? "模考结束 · " + SCOPES[run.scope] : "本组学习已完成"}</span><h1 style="margin-top:18px">${good} / ${run.ids.length} 人${run.scope === "full" ? "全部答对" : "答对"}</h1><p class="muted">${good === run.ids.length ? "本次练习全部答对。" : "未答对项目已记录，可继续学习或安排复习。"}${run.kind === "exam" ? " 这是旧版自评记录，不计金币。" : ""}</p><ul class="resultlist">${run.ids
     .map((id) => {
       const s = rows().find((x) => x.id === id),
         r = final.get(id);
@@ -1116,7 +1118,7 @@ function resultsView(run) {
 }
 function examView() {
   const history = lib()?.exams || (!lib() ? app.demoExams : []) || [];
-  return `<div class="top"><h1>五人模拟考核</h1><span class="source">${source()}</span></div><p class="muted">随机抽取最多 5 名学生进行口答自测，请先选择考核内容。</p>${warning()}<div class="modegrid">${Object.entries(
+  return `<div class="top"><h1>五人模拟考核</h1><span class="source">${source()}</span></div><p class="muted">随机抽取最多 5 名学生进行单选模考，全部提交后统一判分。请先选择考核内容。</p>${warning()}<div class="modegrid">${Object.entries(
     SCOPES,
   )
     .map(
@@ -1125,7 +1127,7 @@ function examView() {
     )
     .join(
       "",
-    )}</div><p class="range-note">抽取范围：${esc(filterDescription(app.settings.filters))} <a href="#overview">调整组合筛选</a></p><div class="actions"><button class="btn" data-action="start-exam" ${!eligible(app.settings.scope).length ? "disabled" : ""}>抽取 ${Math.min(5, eligible(app.settings.scope).length)} 人并开始模考</button></div>${eligible(app.settings.scope).length < 5 ? '<p class="muted" style="margin-top:15px">当前范围不足 5 人，将抽取全部可用学生。</p>' : ""}<h2 style="margin-top:42px">最近的模考</h2>${
+    )}</div><p class="range-note">抽取范围：${esc(filterDescription(app.settings.filters))} <a href="#overview">调整组合筛选</a></p><div class="actions"><button class="btn" data-action="start-exam" ${!eligible(app.settings.scope).length ? "disabled" : ""}>抽取 ${Math.min(5, eligible(app.settings.scope).length)} 人并开始模考</button></div>${eligible(app.settings.scope).length < 5 ? '<p class="muted" style="margin-top:15px">当前范围不足 5 人，将抽取全部可用学生。</p>' : ""}<h2 style="margin-top:32px">客观模考记录</h2>${objectiveExamHistory()}<h2 style="margin-top:32px">旧版自评记录（历史）</h2>${
     history.length
       ? `<ul class="resultlist">${history
           .slice(0, 6)
@@ -1146,10 +1148,10 @@ function rosterView() {
   return `<div class="top"><h1>考核名单</h1><span class="source">${rows().length} 人 · ${source()}</span></div><div class="row"><input type="search" id="search" aria-label="搜索名册" placeholder="搜索姓名、班级或原文件名" value="${esc(query)}"><button class="btn small ${rosterFilter === "all" ? "soft" : "secondary"}" data-filter="all">全部</button><button class="btn small ${rosterFilter === "pending" ? "warn" : "secondary"}" data-filter="pending">待核对 · ${pending().length}</button></div>${warning()}<div class="roster">${list.map((s) => `<article class="student">${picture(s, true)}<div class="info"><h3>${esc(s.name || "待确认姓名")}</h3><p>${esc(s.className)} · ${esc(s.assessmentAddress||s.hometown)}</p><p>是否贫困生：${esc(s.needyLabel)} · 心理情况：${esc(s.psychLabel)}</p><p class="${s.sure ? "muted" : "error"}">${s.sure ? (record(s).full?.last === "good" ? "最近一次全部答对" : record(s).viewed ? "已查看全部考核信息" : "尚未学习") : esc(s.issues.join("；"))}</p>${lib() ? `<button class="btn secondary small" data-edit="${esc(s.id)}">${s.sure ? "查看考核材料" : "查看缺项原因"}</button>` : ""}</div></article>`).join("")}</div>${!list.length ? '<div class="empty">没有符合条件的学生。</div>' : ""}`;
 }
 function libraryView() {
- return `<div class="top"><h1>年度考核材料</h1></div><div class="panel"><h2>上级原表与照片为唯一答案来源</h2><p class="muted">当前材料已独立保存并锁定。练习记录和其他年度版本均不会改变本年度考核名单、答案或照片。</p><button class="btn" data-action="return-bench">返回考核材料与备份</button><p class="muted" style="margin-top:20px">在入口导出“考核完整备份”，同时保存本年度原表、照片、匹配及进度。上级更正材料时重新导入，已有版本仍保留。</p></div>`;
+ return `<div class="top"><h1>年度考核材料</h1></div><div class="panel"><h2>上级原表与照片为唯一答案来源</h2><p class="muted">当前材料已独立保存并锁定。台账修改、学生增减和日常照片调整均不会改变本年度考核名单、答案或照片。</p><button class="btn" data-action="return-bench">返回考核材料与备份</button><p class="muted" style="margin-top:20px">在入口导出“考核完整备份”，同时保存本年度原表、照片、匹配及进度。工作台台账使用其独立的完整备份。上级更正材料时重新导入，已有版本仍保留。</p></div>`;
 }
 function helpView() {
- return `<article class="help"><h1>识生使用说明</h1><h2>1. 筛选学习对象</h2><p>点击照片可显示或隐藏姓名、班级、家庭住址。顶部信息总开关统一设置当前筛选结果；部分显示时，再次开启会全部显示。班级、省份、贫困情况、心理情况可以组合筛选。同一条件内多选时，符合任一选项即可；不同条件之间，必须同时符合。省份支持仅显示或排除所选项，由每位老师自行选择。省份从家庭住址识别，无法确定时单独列出，原表内容保持不变。</p><h2>2. 按固定分组学习</h2><p>默认按信息表原顺序分组，每组最多 6 人。分组和组内顺序保存后保持不变，答题结果不会重新排列学生。需要随机顺序时，可自行切换为随机分组；再次打开时继续使用已保存的分组。</p><h2>3. 查看和调整进度</h2><p>在“学习进度”查看各组成员、完成状态及下一次学习组号。完成整组自测后自动记录进度，也可手动标记单组、补记已学习至第几组、设置每日组数和备注。手动标记不修改答题成绩。不同考核范围、筛选条件和分组方式分别保存计划，切换后可选择原计划继续学习。</p><h2>4. 完成自测或模拟考核</h2><p>查看照片并作答，显示答案后勾选未答对的项目，再提交结果。全部考核项为姓名、班级、家庭住址、是否贫困生、心理情况。仅练姓名或班级时，成绩单独记录。五人模拟考核随机抽取当前筛选中的学生，不改变学习分组；不足 5 人时使用当前全部可练习学生。</p><h2>5. 保存考核材料与进度</h2><p>上级原表和照片是唯一考核依据，各年度材料独立保存。已锁定的考核材料独立于学习记录。入口的“考核完整备份”保存原表、照片、匹配结果、学习计划和练习记录。</p><h2>快捷键</h2><p>空格：查看下一位学生或显示答案。回车：显示答案后提交当前结果，勾选漏项后同样有效。在输入框、其他按钮或确认窗口中，快捷键不提交答题结果。</p></article>`;
+ return `<article class="help"><h1>识生使用说明</h1><h2>1. 筛选学习对象</h2><p>点击照片可显示或隐藏姓名、班级、家庭住址。顶部信息总开关统一设置当前筛选结果；部分显示时，再次开启会全部显示。班级、省份、贫困情况、心理情况可以组合筛选。同一条件内多选时，符合任一选项即可；不同条件之间，必须同时符合。省份支持仅显示或排除所选项，由每位老师自行选择。省份从家庭住址识别，无法确定时单独列出，原表内容保持不变。</p><h2>2. 按固定分组学习</h2><p>默认按信息表原顺序分组，每组最多 6 人。分组和组内顺序保存后保持不变，答题结果不会重新排列学生。需要随机顺序时，可自行切换为随机分组；再次打开时继续使用已保存的分组。</p><h2>3. 查看和调整进度</h2><p>在“学习进度”查看各组成员、完成状态及下一次学习组号。完成整组单选练习后自动记录进度，也可手动标记单组、补记已学习至第几组、设置每日组数和备注。手动标记不修改答题成绩。不同考核范围、筛选条件和分组方式分别保存计划，切换后可选择原计划继续学习。</p><h2>4. 完成单选练习或模拟考核</h2><p>分组学习先查看考核信息，再完成单选题并即时查看判分。五人模考全部提交后统一展示正确率和错项。无有效干扰项的统一值只展示信息，不计金币。全部考核项为姓名、班级、家庭住址、是否贫困生、心理情况。仅练姓名或班级时，成绩单独记录。五人模拟考核随机抽取当前筛选中的学生，不改变学习分组；不足 5 人时使用当前全部可练习学生。</p><h2>5. 保存考核材料与进度</h2><p>上级原表和照片是唯一考核依据，各年度材料独立保存。日常台账修改不会改变考核材料。入口的“考核完整备份”保存原表、照片、匹配结果、学习计划和练习记录；日常台账使用独立备份。</p><h2>快捷键</h2><p>空格：学习阶段查看下一位学生。单选题选择答案后，可点击“下一题”或按该按钮上的回车继续；最后一题点击提交。手动补记学习进度、浏览照片和旧版自评不产生金币。金币与游戏资产通过年度考核入口的独立游戏存档导出。</p></article>`;
 }
 function supportView() {
  return `<article class="help"><h1>联系与说明</h1><div class="panel"><h2>Leven · 识生 ${esc(PRODUCT_INFO.pluginVersion)}</h2><p>联系与支持：<strong style="user-select:all">QQ ${esc(PRODUCT_INFO.contact.value)}</strong></p><p>可选中号码复制。请勿发送学生资料。</p></div>${PRODUCT_INFO.disclaimer.map(p=>`<h2>${esc(p.title)}</h2><p>${esc(p.body)}</p>`).join("")}</article>`;
@@ -1737,6 +1739,7 @@ async function useLibrary(id) {
   rosterFilter = "all";
   move("home");
 }
+/* OBJECTIVE_UI */
 const actions = {
   "return-bench": () => hostPort?.postMessage({type:"return"}),
   "start-learn": () => startLearn(false),
@@ -1775,6 +1778,7 @@ const actions = {
 };
 async function handleClick(event) {
   if (busy) return;
+  if(await handleObjectiveClick(event))return;
   if(await handleStudyClick(event))return;
   if(await handleOverviewClick(event))return;
   const link=event.target.closest('a[href^="#"]');
@@ -1895,6 +1899,7 @@ document.addEventListener("keydown",async event=>{
   if(view==="plan"&&event.key==="Enter"&&!event.isComposing&&!event.target.closest("textarea")&&event.target.closest("#study-plan-form")){event.preventDefault();await saveStudyPlanForm($("#study-plan-form"));return;}
   if(view!=="learn")return;
   const el=event.target,run=session();
+  if(run?.objectiveId&&run.stage!=="study"){if(event.key==="Enter"&&!event.repeat&&!event.isComposing&&!interacting&&!busy&&!el.closest("button,input,select,textarea,a")){const b=document.querySelector('[data-objective="next"]:not(:disabled),[data-objective="submit"]:not(:disabled)');if(b){event.preventDefault();b.click();}}return;}
   const control=el.closest('textarea,[contenteditable=true],input:not([type=checkbox]):not([type=radio])')?'text':el.closest('select')?'select':el.closest('a')?'link':el.closest('input[type=checkbox],input[type=radio]')?'checkbox':el.closest('button')?'button':'none';
   const action=practiceKeyAction({key:event.key,code:event.code,repeat:event.repeat,isComposing:event.isComposing,modified:event.ctrlKey||event.altKey||event.metaKey,blocked:interacting||busy||!!document.querySelector('dialog[open]'),control,missedControl:!!el.closest('[data-missed]'),buttonAction:el.closest('button')?.dataset.action},run);
   if(!action)return;event.preventDefault();interacting=true;

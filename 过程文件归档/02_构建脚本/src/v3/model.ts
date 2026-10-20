@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {cleanOverviewFilters} from "./overview-model.js";
 import {cleanStudyPlans} from "./study-plan.js";
+import {cleanObjective} from "./objective.js";
 import type { Student, PhotoRecord } from "./types.ts";
 
 export const PRACTICE_FIELDS = [["assessmentAddress","家庭住址"],["needyLabel","是否贫困生"],["psychLabel","心理情况"]] as const;
@@ -32,7 +33,7 @@ const fields=z.enum(["name","className","studentNo","hometown","assessmentAddres
 const answer=z.object({id:z.string(),missed:z.array(fields).max(8),skip:z.boolean().optional()});
 const result=z.object({last:z.enum(["good","miss"]),attempts:z.number().finite().nonnegative(),at:z.number().finite(),missed:z.array(fields).max(8)});
 const record=z.object({viewed:z.boolean().optional(),rounds:z.number().finite().nonnegative().optional(),viewedScopes:z.array(scopes).max(3).optional(),full:result.optional(),name:result.optional(),className:result.optional()});
-const sessionSchema=z.object({kind:z.enum(["learn","exam"]),scope:scopes,stage:z.enum(["study","recall","done"]),ids:z.array(z.string()).max(6),queue:z.array(z.string()).max(12),index:z.number().int().nonnegative(),revealed:z.boolean(),missed:z.array(fields).max(8),results:z.array(answer).max(12),retries:z.record(z.string(),z.number().finite()).default({}),reviewOnly:z.boolean().optional(),planId:z.string().max(100).optional(),planGroup:z.number().int().min(1).max(3334).optional()});
+const sessionSchema=z.object({kind:z.enum(["learn","exam"]),scope:scopes,stage:z.enum(["study","recall","done"]),ids:z.array(z.string()).max(6),queue:z.array(z.string()).max(12),index:z.number().int().nonnegative(),revealed:z.boolean(),missed:z.array(fields).max(8),results:z.array(answer).max(12),retries:z.record(z.string(),z.number().finite()).default({}),reviewOnly:z.boolean().optional(),planId:z.string().max(100).optional(),planGroup:z.number().int().min(1).max(3334).optional(),objectiveMode:z.boolean().optional(),objectiveId:z.string().max(100).optional()});
 function photoStamp(photo:string) {
   let a=2166136261,b=5381;
   for(let i=0;i<photo.length;i++){a=Math.imul(a^photo.charCodeAt(i),16777619);b=Math.imul(b,33)^photo.charCodeAt(i);}
@@ -73,5 +74,5 @@ export function reconcilePracticeState(saved: unknown, rows: ReturnType<typeof r
   const studyPlans=cleanStudyPlans(state.studyPlans,rows.map(r=>r.id));
   const activePlanId=typeof state.activePlanId==="string"&&studyPlans.some(p=>p.id===state.activePlanId)?state.activePlanId:"";
   if(session?.planId&&!studyPlans.some(p=>p.id===session!.planId&&JSON.stringify(p.groups[session!.planGroup!-1])===JSON.stringify(session!.ids)))session=null;
-  return {studyPlans,activePlanId,progress,signatures,session,exams:history.success?history.data:[],settings:cleanSettings};
+  return {studyPlans,activePlanId,progress,signatures,session,exams:history.success?history.data:[],settings:cleanSettings,objective:cleanObjective(state.objective,rows.map(r=>r.id))};
 }

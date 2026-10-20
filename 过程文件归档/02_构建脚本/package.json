@@ -1,11 +1,11 @@
 {
   "name": "shisheng",
-  "version": "3.1.1",
+  "version": "3.2.0",
   "private": true,
-  "description": "识生年度考核：官方材料、照片总览、固定分组与学习计划",
+  "description": "年度考核单选训练与独立数码冒险存档",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node --experimental-strip-types --test src/v3/annual.test.mjs src/v3/assessment.test.mjs src/v3/overview.test.mjs src/v3/study-plan.test.mjs src/v3/legacy.test.mjs src/v3/overview-visibility.test.mjs",
+    "test": "node --experimental-strip-types --test src/v3/annual.test.mjs src/v3/assessment.test.mjs src/v3/overview.test.mjs src/v3/study-plan.test.mjs src/v3/legacy.test.mjs src/v3/overview-visibility.test.mjs src/v3/game.test.mjs",
     "build:legacy": "node scripts/build-v2.mjs"
   },
   "devDependencies": {

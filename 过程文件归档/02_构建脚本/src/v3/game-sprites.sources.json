@@ -1,0 +1,116 @@
+{
+  "source": "Wikimon Digimon Story series sprite archive",
+  "rights": "Digimon characters and original game graphics remain property of their respective rights holders. Non-commercial learning incentive.",
+  "sprites": {
+    "agumon": {
+      "page": "https://wikimon.net/File:Agumon_dsle_battle.png",
+      "image": "https://wikimon.net/images/d/d3/Agumon_dsle_battle.png",
+      "filename": "agumon.png"
+    },
+    "gabumon": {
+      "page": "https://wikimon.net/File:Gabumon_dst_battle.png",
+      "image": "https://wikimon.net/images/8/83/Gabumon_dst_battle.png",
+      "filename": "gabumon.png"
+    },
+    "biyomon": {
+      "page": "https://wikimon.net/File:Piyomon_dst_battle.png",
+      "image": "https://wikimon.net/images/6/61/Piyomon_dst_battle.png",
+      "filename": "biyomon.png"
+    },
+    "tentomon": {
+      "page": "https://wikimon.net/File:Tentomon_dst_battle.png",
+      "image": "https://wikimon.net/images/7/70/Tentomon_dst_battle.png",
+      "filename": "tentomon.png"
+    },
+    "palmon": {
+      "page": "https://wikimon.net/File:Palmon_dst_battle.png",
+      "image": "https://wikimon.net/images/2/22/Palmon_dst_battle.png",
+      "filename": "palmon.png"
+    },
+    "gomamon": {
+      "page": "https://wikimon.net/File:Gomamon_dst_battle.png",
+      "image": "https://wikimon.net/images/6/68/Gomamon_dst_battle.png",
+      "filename": "gomamon.png"
+    },
+    "patamon": {
+      "page": "https://wikimon.net/File:Patamon_dst_battle.png",
+      "image": "https://wikimon.net/images/b/b0/Patamon_dst_battle.png",
+      "filename": "patamon.png"
+    },
+    "gatomon": {
+      "page": "https://wikimon.net/File:Tailmon_dst_battle.png",
+      "image": "https://wikimon.net/images/2/24/Tailmon_dst_battle.png",
+      "filename": "gatomon.png"
+    },
+    "angemon": {
+      "page": "https://wikimon.net/File:Angemon_dst_battle.png",
+      "image": "https://wikimon.net/images/b/b3/Angemon_dst_battle.png",
+      "filename": "angemon.png"
+    },
+    "angewomon": {
+      "page": "https://wikimon.net/File:Angewomon_dst_battle.png",
+      "image": "https://wikimon.net/images/f/f0/Angewomon_dst_battle.png",
+      "filename": "angewomon.png"
+    },
+    "greymon": {
+      "page": "https://wikimon.net/File:Greymon_dst_battle.png",
+      "image": "https://wikimon.net/images/b/b6/Greymon_dst_battle.png",
+      "filename": "greymon.png"
+    },
+    "metalgreymon": {
+      "page": "https://wikimon.net/File:Metalgreymon_dst_battle.png",
+      "image": "https://wikimon.net/images/7/79/Metalgreymon_dst_battle.png",
+      "filename": "metalgreymon.png"
+    },
+    "garurumon": {
+      "page": "https://wikimon.net/File:Garurumon_dst_battle.png",
+      "image": "https://wikimon.net/images/c/cb/Garurumon_dst_battle.png",
+      "filename": "garurumon.png"
+    },
+    "weregarurumon": {
+      "page": "https://wikimon.net/File:Weregarurumon_dst_battle.png",
+      "image": "https://wikimon.net/images/4/48/Weregarurumon_dst_battle.png",
+      "filename": "weregarurumon.png"
+    },
+    "devimon": {
+      "page": "https://wikimon.net/File:Devimon_dst_battle.png",
+      "image": "https://wikimon.net/images/c/c8/Devimon_dst_battle.png",
+      "filename": "devimon.png"
+    },
+    "etemon": {
+      "page": "https://wikimon.net/File:Etemon_dst_battle.png",
+      "image": "https://wikimon.net/images/9/9b/Etemon_dst_battle.png",
+      "filename": "etemon.png"
+    },
+    "piedmon": {
+      "page": "https://wikimon.net/File:Piemon_dst_battle.png",
+      "image": "https://wikimon.net/images/1/1e/Piemon_dst_battle.png",
+      "filename": "piedmon.png"
+    },
+    "machinedramon": {
+      "page": "https://wikimon.net/File:Mugendramon_dst_battle.png",
+      "image": "https://wikimon.net/images/a/af/Mugendramon_dst_battle.png",
+      "filename": "machinedramon.png"
+    },
+    "metalseadramon": {
+      "page": "https://wikimon.net/File:Metalseadramon_dst_battle.png",
+      "image": "https://wikimon.net/images/a/a4/Metalseadramon_dst_battle.png",
+      "filename": "metalseadramon.png"
+    },
+    "omnimon": {
+      "page": "https://wikimon.net/File:Omegamon_dsle_battle.png",
+      "image": "https://wikimon.net/images/7/71/Omegamon_dsle_battle.png",
+      "filename": "omnimon.png"
+    },
+    "wargreymon": {
+      "page": "https://wikimon.net/File:Wargreymon_dst_battle_hit.png",
+      "image": "https://wikimon.net/images/5/52/Wargreymon_dst_battle_hit.png",
+      "filename": "wargreymon.png"
+    },
+    "metalgarurumon": {
+      "page": "https://wikimon.net/File:Metalgarurumon_dst_battle_hit.png",
+      "image": "https://wikimon.net/images/2/2a/Metalgarurumon_dst_battle_hit.png",
+      "filename": "metalgarurumon.png"
+    }
+  }
+}
