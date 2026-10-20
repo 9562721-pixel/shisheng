@@ -29,7 +29,7 @@ beizhaopian-entry{display:block;margin:0 0 20px;color:var(--color-ink,#263f35)}
 class RecognitionEntry extends HTMLElement{
   connectedCallback(){
     this.active=true;this.loaded=false;this.sets=[];this.current=null;this.state=null;this.queue=Promise.resolve();this.message='';this.busy=false;
-    this.addEventListener('click',this.click);this.addEventListener('change',this.change);this.studyRequest=()=>{if(this.current)void this.openFrame();else this.showError('请先上传照片压缩包和考核信息表，再开始照片学习。');};this.addEventListener('recognition-study-request',this.studyRequest);
+    this.addEventListener('click',this.click);this.addEventListener('change',this.change);this.studyRequest=event=>{if(this.current){if(event.detail?.mode==='continuous')this.closeFrame();void this.openFrame(event.detail?.mode);}else this.showError('请先上传照片压缩包和考核信息表，再开始照片学习。');};this.addEventListener('recognition-study-request',this.studyRequest);
 
 
     try{this.channel=new BroadcastChannel('shisheng-annual-v3');this.channel.onmessage=()=>void this.load();}catch{this.channel={postMessage(){},close(){}};}
@@ -79,7 +79,7 @@ class RecognitionEntry extends HTMLElement{
   }catch(error){this.showError(error.message||'操作未完成，请重试。');}};
   change=async e=>{if(e.target.closest('.bp-upload')){this.upload=null;this.querySelector('.bp-preview')?.replaceChildren();}if(e.target.getAttribute('aria-label')==='考核年度与材料'&&!this.busy){try{this.closeFrame();await selectAnnual(e.target.value);this.message='';await this.load();this.channel.postMessage('changed');}catch{this.showError('切换失败，请重试。');}}};
   closeFrame(){this.frameCleanup?.();this.frameCleanup=null;this.querySelector('.bp-frame-slot')?.replaceChildren();}
-  async openFrame() {
+  async openFrame(practiceMode) {
     if(!this.loaded || !this.current || this.frameCleanup) return;
     await this.queue.catch(()=>{});
     if(!this.active) return;
@@ -113,7 +113,7 @@ class RecognitionEntry extends HTMLElement{
           if(active){status.textContent='练习进度已保存在本机';port.postMessage({type:'saved',requestId:data.requestId,ok:true});}
         }catch{if(active){status.textContent='保存失败，请重试或导出练习备份';port.postMessage({type:'saved',requestId:data.requestId,ok:false});}}
       };
-      frame.contentWindow.postMessage({type:'shisheng:init',rows,state,label:`${dataset.year} 年考核`},'*',[channel.port2]);
+      frame.contentWindow.postMessage({type:'shisheng:init',rows,state,practiceMode,label:`${dataset.year} 年考核`},'*',[channel.port2]);
       status.textContent=`${dataset.year} 年考核 · 材料已锁定 · 本机练习`;
     };
     window.addEventListener('message',receive);
