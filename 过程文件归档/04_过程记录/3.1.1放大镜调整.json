@@ -1,0 +1,17 @@
+{
+  "version": "3.1.1",
+  "date": "2026-10-20",
+  "change": "照片放大按钮44→28像素，图标18→14像素",
+  "bytes": 1629163,
+  "sha256": "223dc52e93e635211b9f41c302a5a7ffbdb76377c0c0214f24b7e5a85232ed78",
+  "entryFilesIdentical": true,
+  "scriptSyntax": true,
+  "browserVerified": {
+    "buttonWidth": 28,
+    "buttonHeight": 28,
+    "iconWidth": 14,
+    "zoomOpenAndClose": true,
+    "fixture": "24名虚构学生"
+  },
+  "scope": "仅缩小放大镜，激励与客观考试仅调研，未实现"
+}
