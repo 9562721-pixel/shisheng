@@ -40,3 +40,8 @@ export function filterDescription(input){
   if(f.query.trim())parts.push('检索：'+f.query.trim());
   return parts.join('；')||'全部考核学生';
 }
+
+// Visibility is a view-only state. Master actions assign one value, never invert each card.
+export function overviewInfoState(visible,ids){const shown=ids.filter(id=>visible.has(id)).length,total=ids.length;return {shown,total,all:total>0&&shown===total,mixed:shown>0&&shown<total};}
+export function setOverviewInfo(visible,ids,show){const next=new Set(visible);for(const id of ids){if(show)next.add(id);else next.delete(id);}return next;}
+export function toggleOverviewInfo(visible,id){return setOverviewInfo(visible,[id],!visible.has(id));}

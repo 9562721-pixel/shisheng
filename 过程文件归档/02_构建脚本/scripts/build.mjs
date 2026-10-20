@@ -6,4 +6,4 @@ const code=chunks[0].code.replace(/<\/script/gi,'<\\/script');
 const html=fs.readFileSync(path.join(base,'src/v3/shell.html'),'utf8').replace('/* APP */',()=>code);
 if(/<script[^>]+src=|<link[^>]+(?:href=|rel=["']stylesheet)/i.test(html))throw Error('生成文件包含远程执行资源。');
 for(const name of ['index.html','shisheng.html'])fs.writeFileSync(path.join(root,name),html);
-console.log(`识生3.0：${Buffer.byteLength(html)}字节，index.html与shisheng.html一致。`);
+console.log(`识生3.1：${Buffer.byteLength(html)}字节，index.html与shisheng.html一致。`);
