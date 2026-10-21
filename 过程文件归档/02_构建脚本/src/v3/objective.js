@@ -14,7 +14,12 @@ export function publicQuiz(q){const show=q.status==='done';return {...q,outbox:(
 const hash=async value=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))].map(x=>x.toString(16).padStart(2,'0')).join('');
 async function settle(dataset,quizId){
   let record=(await readProgress(dataset.id))?.state?.objective?.quizzes?.find(q=>q.id===quizId);if(!record)return;
-  for(const pending of record.outbox||[]){if(pending.paid)continue;const {result}=await transactGame({type:'reward',requestId:pending.id,events:pending.events,completed:pending.completed,kind:record.kind},{now:pending.at||record.finishedAt||record.createdAt});await mutateAnnualProgress(dataset.id,dataset.hash,s=>{const item=s.objective?.quizzes?.find(q=>q.id===quizId)?.outbox.find(x=>x.id===pending.id);if(item&&!item.paid){const run=s.objective?.continuousRuns?.find(r=>r.id===record.continuousId);if(run)run.gold+=(result.gold||0);item.paid=true;item.gold=result.gold||0;item.gifts=(result.gifts||[]).map(x=>x.species);}});}
+  for(const pending of record.outbox||[]){
+    if(pending.paid)continue;
+    let result={gold:0,gifts:[]};
+    if(record.continuousId&&record.kind==='learn')({result}=await transactGame({type:'reward',requestId:pending.id,events:pending.events,completed:pending.completed,kind:'learn',mode:'continuous'},{now:pending.at||record.finishedAt||record.createdAt}));
+    await mutateAnnualProgress(dataset.id,dataset.hash,s=>{const item=s.objective?.quizzes?.find(q=>q.id===quizId)?.outbox.find(x=>x.id===pending.id);if(item&&!item.paid){const run=s.objective?.continuousRuns?.find(r=>r.id===record.continuousId);if(run)run.gold+=(result.gold||0);item.paid=true;item.gold=result.gold||0;item.gifts=(result.gifts||[]).map(x=>x.species);}});
+  }
   notifyGame();record=(await readProgress(dataset.id))?.state?.objective?.quizzes?.find(q=>q.id===quizId);return record;
 }
 async function present(dataset,q){if(!q)throw Error('答题记录不存在，请重新开始。');const result=publicQuiz(q);if(q.continuousId){const run=(await readProgress(dataset.id))?.state?.objective?.continuousRuns?.find(r=>r.id===q.continuousId);if(run){const {ids,...summary}=run;result.continuous={...summary,total:ids.length};}}return result;}
@@ -37,17 +42,13 @@ export async function objectiveCommand(dataset,rows,command){
     });
     return present(dataset,await settle(dataset,quizId));
   }
-  if(command.action==='start'){
-    const {ids,scope,kind,planId,planGroup}=command;if(!['learn','exam'].includes(kind)||kind==='exam'&&ids?.length>5)throw Error('练习类型无效。');
-    const built=buildQuestions(rows,ids,scope);const q={id:crypto.randomUUID(),kind,scope,ids:[...ids],planId:planId||'',planGroup:planGroup||0,createdAt:Date.now(),status:'active',...built,outbox:[]};
-    await mutateAnnualProgress(dataset.id,dataset.hash,s=>{if(planId){const plan=s.studyPlans?.find(p=>p.id===planId);if(!plan||JSON.stringify(plan.groups[planGroup-1])!==JSON.stringify(ids))throw Error('学习分组已变化，请重新打开学习计划。');}s.objective||={quizzes:[]};s.objective.quizzes.unshift(q);s.objective.quizzes=s.objective.quizzes.slice(0,60);});return present(dataset,q);
-  }
+  if(command.action==='start')throw Error('分组背诵与五人模考已恢复口述自评；请选择无限刷题进行单选练习。');
   const quizId=command.quizId;
   if(command.action==='get'){const q=await settle(dataset,quizId);if(!q)throw Error('客观答题记录不存在，请开始新一组。');return present(dataset,q);}
   if(!['answer','submit'].includes(command.action))throw Error('客观答题操作无效。');
-  const saved=(await readProgress(dataset.id))?.state?.objective?.quizzes?.find(q=>q.id===quizId);if(!saved)throw Error('未找到本轮考核，请重新开始。');
+  const saved=(await readProgress(dataset.id))?.state?.objective?.quizzes?.find(q=>q.id===quizId);if(!saved)throw Error('未找到本轮考核，请重新开始。');if(!saved.continuousId||saved.kind!=='learn')throw Error('此单选记录已转为历史，请使用口述背诵、模考或无限刷题入口。');
   const keys={};for(const q of saved.questions)keys[q.id]=await hash(`official-student-field-v1|${text(q.studentId)}|${q.field}`);
-  const practiceKey=await hash('daily-six-person-practice'),mockKey=await hash('daily-five-person-mock');
+  const practiceKey=await hash('daily-six-person-practice');
   await mutateAnnualProgress(dataset.id,dataset.hash,s=>{
     const q=s.objective?.quizzes?.find(q=>q.id===quizId);if(!q)throw Error('本轮答题记录已变化。');
     for(const item of q.questions){const row=rows.find(r=>r.id===item.studentId);const correct=row&&item.options.indexOf(text(row[item.field]));if(!row||correct<0)throw Error('题目与锁定信息表不一致，请重新开始本轮。');item.correct=correct;}
@@ -60,11 +61,11 @@ export async function objectiveCommand(dataset,rows,command){
       if(q.status==='done')return;
       if(q.questions.some(x=>x.choice===undefined))throw Error('请完成所有单选题后再提交。');
       q.status='done';q.finishedAt=Date.now();
-      const events=q.kind==='exam'?q.questions.filter(x=>x.choice===x.correct).map(x=>({kind:'answer',key:keys[x.id]})):[];
+      const events=[];
       let fullGroup=q.ids.length===(q.kind==='learn'?6:5)&&q.questions.length>0;
       if(q.continuousId){const run=s.objective.continuousRuns?.find(r=>r.id===q.continuousId);if(!run||run.index!==q.position)throw Error('连续练习进度已变化，请重新读取。');run.index++;run.correct+=q.questions.filter(x=>x.choice===x.correct).length;run.questionsTotal+=q.questions.length;if(q.questions.length)run.effectiveCompleted++;fullGroup=q.questions.length>0&&run.effectiveCompleted%6===0;if(run.index>=run.ids.length){run.status='done';run.finishedAt=q.finishedAt;}}
 
-      if(fullGroup)events.push({kind:q.kind==='learn'?'practice':'mock',key:q.kind==='learn'?practiceKey:mockKey});
+      if(fullGroup)events.push({kind:'practice',key:practiceKey});
       q.outbox.push({id:`complete:${q.id}`,events,completed:fullGroup,at:q.finishedAt});
       // Objective results are distinct from the historical self-evaluation entries.
       s.progress||={};for(const studentId of q.ids){const tested=q.questions.filter(x=>x.studentId===studentId);if(!tested.length)continue;const p=s.progress[studentId]||={};const previous=p[q.scope];p[q.scope]={attempts:(previous?.attempts||0)+1,last:tested.every(x=>x.choice===x.correct)?'good':'miss',missed:tested.filter(x=>x.choice!==x.correct).map(x=>x.field),at:Date.now()};}

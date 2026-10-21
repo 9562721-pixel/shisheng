@@ -34,3 +34,11 @@ export function practiceKeyAction({key,code,repeat,isComposing,modified,blocked,
   if(code==='Space'&&control==='none'){if(run.stage==='study')return 'study-next';if(run.stage==='recall'&&!run.revealed)return 'reveal';}
   return null;
 }
+
+// Resume unfinished pre-update group/mock choices as oral recall; preserve continuous quizzes.
+export function restoreRecallSession(run){
+  if(!run||run.continuousId||(!run.objectiveMode&&!run.objectiveId))return run;
+  if(run.stage==='done')return null;
+  const {objectiveId,objectiveMode,...rest}=run;
+  return {...rest,objectiveMode:false,queue:run.stage==='study'?[]:[...run.ids],index:run.stage==='study'?run.index:0,revealed:false,missed:[],results:[],retries:{}};
+}

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {cleanOverviewFilters} from "./overview-model.js";
-import {cleanStudyPlans} from "./study-plan.js";
+import {cleanStudyPlans,restoreRecallSession} from "./study-plan.js";
 import {cleanObjective} from "./objective.js";
 import type { Student, PhotoRecord } from "./types.ts";
 
@@ -74,5 +74,5 @@ export function reconcilePracticeState(saved: unknown, rows: ReturnType<typeof r
   const studyPlans=cleanStudyPlans(state.studyPlans,rows.map(r=>r.id));
   const activePlanId=typeof state.activePlanId==="string"&&studyPlans.some(p=>p.id===state.activePlanId)?state.activePlanId:"";
   if(session?.planId&&!studyPlans.some(p=>p.id===session!.planId&&JSON.stringify(p.groups[session!.planGroup!-1])===JSON.stringify(session!.ids)))session=null;
-  return {studyPlans,activePlanId,progress,signatures,session,exams:history.success?history.data:[],settings:cleanSettings,objective:cleanObjective(state.objective,rows.map(r=>r.id))};
+  return {studyPlans,activePlanId,progress,signatures,session:restoreRecallSession(session),exams:history.success?history.data:[],settings:cleanSettings,objective:cleanObjective(state.objective,rows.map(r=>r.id))};
 }
