@@ -1,0 +1,113 @@
+// All prices, rates and growth curves live here. Photo libraries never own this state.
+export const GAME_CONFIG=Object.freeze({version:3,giftTickets:100,pityLimit:100,dailyCap:120,answerGold:2,taskGold:10,petPrice:10,equipmentPrice:30,levelPrice:30,equipmentLevelPrice:15,maxLevel:30,ssrRate:.02,srRate:.20,equipmentSSRRate:.05,equipmentSRRate:.25,releasedStages:10});
+export const BONUS_CAMPAIGN=Object.freeze({id:'bonus-100-20261021',tickets:100});
+const pet=(name,rarity,hp,attack,defense,skill,growth=1)=>({name,rarity,hp,attack,defense,skill,growth});
+export const SPECIES={
+  agumon:pet('亚古兽','R',150,30,13,'小型火焰',.8),gabumon:pet('加布兽','R',160,28,15,'爆炎火焰弹',.8),
+  biyomon:pet('比丘兽','R',125,26,10,'魔法火焰',1),tentomon:pet('甲虫兽','R',145,24,15,'飞翼闪电',1),palmon:pet('巴鲁兽','R',145,25,12,'毒蔓藤',1),gomamon:pet('哥玛兽','R',155,24,13,'鱼群大暴走',1),patamon:pet('巴达兽','R',130,25,12,'空气炮',1),gatomon:pet('迪路兽','R',140,29,13,'猫猫拳',1),
+  devimon:pet('恶魔兽','SR',240,48,23,'死亡之爪',1.2),etemon:pet('悟空兽','SR',270,51,25,'爱心光线',1.2),
+  angemon:pet('天使兽','SSR',420,95,42,'天堂之拳',1.5),angewomon:pet('天女兽','SSR',400,100,40,'神圣弓箭',1.5),piedmon:pet('小丑皇','SSR',430,102,38,'王牌飞刀',1.5),machinedramon:pet('机械邪龙兽','SSR',500,96,48,'无限大炮',1.5),metalseadramon:pet('钢铁海龙兽','SSR',470,98,46,'究极波浪炮',1.5),omnimon:pet('奥米加兽','SSR',460,110,45,'暴龙剑',1.5),
+};
+export const EVOLUTIONS={agumon:[['agumon','亚古兽'],['greymon','暴龙兽'],['metalgreymon','机械暴龙兽'],['wargreymon','战斗暴龙兽']],gabumon:[['gabumon','加布兽'],['garurumon','加鲁鲁兽'],['weregarurumon','兽人加鲁鲁兽'],['metalgarurumon','钢铁加鲁鲁兽']]};
+export const EVOLUTION_LEVELS=[1,5,12,20];
+export const COMPANIONS=['biyomon','tentomon','palmon','gomamon','patamon','gatomon'];
+export const EQUIPMENT=Object.fromEntries(['R','SR','SSR'].flatMap((rarity,i)=>[['weapon','攻击芯片','attack',[6,12,20][i]],['armor','防护装甲','defense',[4,8,13][i]],['charm','生命挂件','hp',[25,50,85][i]]].map(([slot,name,stat,value])=>[`${slot}-${rarity}`,{slot,name,stat,value,rarity}])));
+const chapter1=[['海岸登陆','agumon','在陌生海岸与伙伴会合，开始文件岛探索。'],['密林通路','tentomon','黑色齿轮侵入密林，先清理前方通路。'],['齿轮追踪','gabumon','沿齿轮留下的痕迹前进，寻找污染源。'],['无限山山道','gatomon','穿过山道，伙伴们准备迎战岛上的控制者。'],['恶魔兽决战','devimon','登上无限山，击败恶魔兽，解除文件岛危机。']];
+const chapter2=[['沙拔大陆登陆','gomamon','告别文件岛，横渡海洋抵达新的大陆。'],['沙漠行军','palmon','穿过沙漠，发现由黑色电缆连接的据点。'],['金字塔调查','devimon','调查金字塔中的网络，切断敌人的支援。'],['黑暗网络核心','gatomon','悟空兽的网络已暴露，向核心区域推进。'],['悟空兽决战','etemon','突破最后防线，与悟空兽展开决战。']];
+export const CHAPTERS=[['文件岛','恶魔兽'],['沙拔大陆','悟空兽'],['东京追踪','吸血魔兽'],['黑暗龙卷山','黑暗四天王'],['最终决战','启示录兽']];
+export const STAGES=[...chapter1,...chapter2].map(([name,enemy,story],i)=>({id:i+1,name,enemy,story,chapter:i<5?0:1,hp:125+i*38,attack:24+i*3.4,defense:8+i*1.8}));
+export const beijingDay=(now=Date.now())=>new Date(now+8*3600000).toISOString().slice(0,10);
+const id=()=>crypto.randomUUID();
+export const individual=(species,source)=>({id:id(),species,level:1,form:0,equipment:{weapon:'',armor:'',charm:''},source,copies:1});
+export function newGame(now=Date.now()) {return migrateGame({version:2,id:id(),createdAt:now,updatedAt:now,revision:0,initialGift:true,tickets:GAME_CONFIG.giftTickets,gold:0,starter:'',activePet:'',pets:[],equipment:[],cleared:[],lootClaimed:[],practiceCount:0,mockCount:0,gifts:[],daily:{},receipts:{},ledger:[{at:now,kind:'welcome',tickets:GAME_CONFIG.giftTickets,gold:0}]},now);}
+export function petForm(p){const evo=EVOLUTIONS[p.species];return evo?{key:evo[p.form][0],name:evo[p.form][1]}:{key:p.species,name:SPECIES[p.species].name};}
+export function petStats(p,equipment=[]){const s=SPECIES[p.species],n=p.level-1,boost=[1,1.18,1.5,1.9][p.form]*STAR_MULTIPLIERS[petStars(p)-1];const out={hp:Math.round((s.hp+n*18*s.growth)*boost),attack:Math.round((s.attack+n*4*s.growth)*boost),defense:Math.round((s.defense+n*2*s.growth)*boost)};for(const gearId of Object.values(p.equipment)){const g=equipment.find(e=>e.id===gearId);if(g){const d=EQUIPMENT[g.type];out[d.stat]+=d.value+(g.level-1)*(d.stat==='hp'?8:2);}}return out;}
+export function battle(p,equipment,stage){const stats=petStats(p,equipment);let hp=stats.hp,enemyHP=stage.hp;const log=[];for(let turn=1;turn<=100&&hp>0&&enemyHP>0;turn++){const skill=turn%3===0;const damage=Math.max(1,Math.round(stats.attack*(skill?1.6:1)-stage.defense*.65));enemyHP=Math.max(0,enemyHP-damage);log.push({turn,side:'pet',skill,damage,hp:enemyHP});if(enemyHP<=0)break;const enemySkill=turn%3===0;const hit=Math.max(1,Math.round(stage.attack*(enemySkill?1.35:1)-stats.defense*.65));hp=Math.max(0,hp-hit);log.push({turn,side:'enemy',skill:enemySkill,damage:hit,hp});}return {won:enemyHP<=0,hp,enemyHP,stats,log,stage:stage.id,pet:petForm(p).name,enemy:SPECIES[stage.enemy].name};}
+
+export const STAR_COPIES=[1,2,4,8,16];
+export const STAR_MULTIPLIERS=[1,1.22,1.5,1.9,2.4];
+export const petStars=p=>STAR_COPIES.filter(n=>(p.copies||1)>=n).length;
+export const totalCopies=p=>p.pets.reduce((n,v)=>n+(v.copies||1),0);
+export const drawnCount=p=>Math.max(0,totalCopies(p)-(p.starter?1:0)-p.gifts.length);
+export function obtainPet(p,species,source){
+  let v=p.pets.find(x=>x.species===species);const isNew=!v,before=v?petStars(v):0;
+  if(v)v.copies=(v.copies||1)+1;else{v=individual(species,source);p.pets.push(v);}
+  return {pet:structuredClone(v),isNew,starsBefore:before,starsAfter:petStars(v)};
+}
+function firstClearLoot(p,stageId){
+  p.lootClaimed||=[];if(p.lootClaimed.includes(stageId))return null;
+  const slot=['weapon','armor','charm'][(stageId-1)%3],rarity=stageId===10?'SSR':stageId===5?'SR':'R';
+  const g={id:id(),type:`${slot}-${rarity}`,level:1};p.equipment.push(g);p.lootClaimed.push(stageId);return g;
+}
+// One-time migration occurs in the same transaction as reading the profile.
+// Keep all copies, strongest training and all gear; refund redundant paid levels.
+function migrateLegacyGame(p,now=Date.now()){
+  if(p.version===2||p.version===3)return p;if(p.version!==1)throw Error('当前游戏存档版本暂不受支持，原存档保留。');
+  const groups=new Map();for(const v of p.pets){if(!groups.has(v.species))groups.set(v.species,[]);groups.get(v.species).push(v);}
+  let refund=0,merged=0;const mergedPets=[];
+  for(const list of groups.values()){
+    const sorted=[...list].sort((a,b)=>b.level-a.level||b.form-a.form),keeper=list.find(v=>v.id===p.activePet)||sorted[0];
+    const level=Math.max(...list.map(v=>v.level)),form=Math.max(...list.map(v=>v.form));
+    refund+=(list.reduce((n,v)=>n+v.level-1,0)-(level-1))*GAME_CONFIG.levelPrice;merged+=list.length-1;
+    keeper.level=level;keeper.form=form;keeper.copies=list.reduce((n,v)=>n+(v.copies||1),0);
+    const slots={};for(const slot of ['weapon','armor','charm']){
+      const candidates=list.map(v=>p.equipment.find(g=>g.id===v.equipment[slot])).filter(Boolean).sort((a,b)=>{const da=EQUIPMENT[a.type],db=EQUIPMENT[b.type];return db.value+(b.level-1)*(db.stat==='hp'?8:2)-da.value-(a.level-1)*(da.stat==='hp'?8:2);});slots[slot]=candidates[0]?.id||'';
+    }
+    keeper.equipment=slots;mergedPets.push(keeper);
+  }
+  p.pets=mergedPets;p.gold+=refund;p.lootClaimed=[];const backfilled=p.cleared.filter(n=>n<=GAME_CONFIG.releasedStages).map(n=>firstClearLoot(p,n)).filter(Boolean).length;
+  p.version=2;p.revision++;p.updatedAt=now;p.migration={merged,refund,backfilled};
+  if(merged||refund||backfilled)addLedger(p,{at:now,kind:'migration',gold:refund,merged,backfilled});return p;
+}
+// Persist schema, pity and campaign receipt atomically with the wallet.
+export function migrateGame(p,now=Date.now()){
+  migrateLegacyGame(p,now);
+  if(p.version===2){p.version=3;p.pity={sinceSSR:0,total:0};p.campaigns=[];p.revision++;p.updatedAt=now;}
+  if(p.version!==3)throw Error('当前游戏存档版本暂不受支持，原存档保留。');
+  if(!p.campaigns.includes(BONUS_CAMPAIGN.id)){
+    p.tickets+=BONUS_CAMPAIGN.tickets;p.campaigns.push(BONUS_CAMPAIGN.id);p.revision++;p.updatedAt=now;
+    addLedger(p,{at:now,kind:BONUS_CAMPAIGN.id,tickets:BONUS_CAMPAIGN.tickets,gold:0});
+  }
+  return p;
+}
+function spend(p,amount){if(p.gold<amount)throw Error('金币不足，请通过客观答题获取金币。');p.gold-=amount;}
+function addLedger(p,item){p.ledger.unshift(item);p.ledger=p.ledger.slice(0,300);}
+function rollPet(random,guaranteed=false){const r=random(),rarity=guaranteed||r<GAME_CONFIG.ssrRate?'SSR':r<GAME_CONFIG.ssrRate+GAME_CONFIG.srRate?'SR':'R';const pool=Object.keys(SPECIES).filter(k=>SPECIES[k].rarity===rarity);return pool[Math.min(pool.length-1,Math.floor(random()*pool.length))];}
+function noviceGifts(p){const gifts=[];const grant=(key,species)=>{if(!p.gifts.includes(key)){p.gifts.push(key);const obtained=obtainPet(p,species,'新手任务');gifts.push(obtained.pet);}};if(p.starter&&p.practiceCount>=1)grant('other-starter',p.starter==='agumon'?'gabumon':'agumon');COMPANIONS.forEach((k,i)=>{if(p.practiceCount>=i+1)grant(k,k);});return gifts;}
+// Called inside one IndexedDB readwrite transaction. Never accepts a UI correctness flag.
+export function gameCommand(p,command,{now=Date.now(),random=Math.random}={}) {
+  migrateGame(p,now);
+  const {type,requestId}=command;if(typeof requestId!=='string'||!requestId||requestId.length>160)throw Error('操作编号无效，请重新打开冒险。');
+  if(Object.hasOwn(p.receipts,requestId))return p.receipts[requestId];
+  let result={};
+  if(type==='starter'){if(p.starter)throw Error('已经选择初始伙伴。');if(!EVOLUTIONS[command.species])throw Error('请选择亚古兽或加布兽。');p.starter=command.species;const v=obtainPet(p,command.species,'初始伙伴').pet;p.activePet=v.id;result={pet:v,gifts:noviceGifts(p)};}
+  else if(type==='draw'){if(!p.starter)throw Error('请先选择初始伙伴。');const n=command.count;if(![1,10].includes(n))throw Error('抽取数量无效。');if(command.currency==='tickets'){if(p.tickets<n)throw Error('抽取券不足，可以改用金币抽取。');p.tickets-=n;}else if(command.currency==='gold')spend(p,GAME_CONFIG.petPrice*n);else throw Error('请选择抽取券或金币。');const pulls=Array.from({length:n},()=>{const guaranteed=p.pity.sinceSSR>=GAME_CONFIG.pityLimit-1,species=rollPet(random,guaranteed),ssr=SPECIES[species].rarity==='SSR';p.pity.sinceSSR=ssr?0:p.pity.sinceSSR+1;p.pity.total++;return {...obtainPet(p,species,'抽取'),guaranteed};});result={pets:pulls.map(x=>x.pet),pulls,pity:structuredClone(p.pity)};addLedger(p,{at:now,kind:'draw',count:n,tickets:command.currency==='tickets'?-n:0,gold:command.currency==='gold'?-GAME_CONFIG.petPrice*n:0});}
+  else if(type==='equipment-draw'){spend(p,GAME_CONFIG.equipmentPrice);const r=random(),rarity=r<GAME_CONFIG.equipmentSSRRate?'SSR':r<GAME_CONFIG.equipmentSSRRate+GAME_CONFIG.equipmentSRRate?'SR':'R',slot=['weapon','armor','charm'][Math.min(2,Math.floor(random()*3))];const g={id:id(),type:`${slot}-${rarity}`,level:1};p.equipment.push(g);result={equipment:g};addLedger(p,{at:now,kind:'equipment',gold:-GAME_CONFIG.equipmentPrice});}
+  else if(['active','level','evolve','equip'].includes(type)){const v=p.pets.find(v=>v.id===command.petId);if(!v)throw Error('未找到该宠物，请刷新后重试。');if(type==='active')p.activePet=v.id;if(type==='level'){if(v.level>=GAME_CONFIG.maxLevel)throw Error('宠物已达到当前等级上限。');spend(p,GAME_CONFIG.levelPrice);v.level++;addLedger(p,{at:now,kind:'level',gold:-GAME_CONFIG.levelPrice});}if(type==='evolve'){if(!EVOLUTIONS[v.species]||v.form>=3||v.level<EVOLUTION_LEVELS[v.form+1])throw Error('尚未达到下一形态所需等级。');v.form++;}if(type==='equip'){if(!['weapon','armor','charm'].includes(command.slot))throw Error('装备位置无效。');const g=p.equipment.find(g=>g.id===command.gearId);if(command.gearId&&(!g||EQUIPMENT[g.type].slot!==command.slot))throw Error('装备与位置不符。');for(const other of p.pets)for(const slot of Object.keys(other.equipment))if(command.gearId&&other.equipment[slot]===command.gearId)other.equipment[slot]='';v.equipment[command.slot]=command.gearId||'';}result={pet:v};}
+  else if(type==='equipment-level'){const g=p.equipment.find(g=>g.id===command.gearId);if(!g||g.level>=10)throw Error('装备不存在或已达到强化上限。');spend(p,GAME_CONFIG.equipmentLevelPrice);g.level++;result={equipment:g};addLedger(p,{at:now,kind:'equipment-level',gold:-GAME_CONFIG.equipmentLevelPrice});}
+  else if(type==='fight'){const stage=STAGES.find(s=>s.id===command.stageId);if(!stage||stage.id>GAME_CONFIG.releasedStages||stage.id>p.cleared.length+1)throw Error('请先完成前一节点，或等待后续更新开放。');const v=p.pets.find(v=>v.id===p.activePet);if(!v)throw Error('请先选择一只出战伙伴。');result=battle(v,p.equipment,stage);if(result.won){if(!p.cleared.includes(stage.id))p.cleared.push(stage.id);const loot=firstClearLoot(p,stage.id);result.loot=loot?[loot]:[];result.firstClear=!!loot;if(loot)addLedger(p,{at:now,kind:'first-clear',gold:0,stage:stage.id});}else{result.loot=[];result.firstClear=false;}}
+  else if(type==='reward'){
+    if(command.mode!=='continuous'||command.kind!=='learn')return {gold:0,gifts:[],day:beijingDay(now),earned:p.daily[beijingDay(now)]?.earned||0};
+    // command.events are created only by the host's official-table quiz service.
+    const day=beijingDay(now),daily=p.daily[day]||={earned:0,keys:[]};let gold=0;
+    for(const event of command.events||[]){if(!/^[a-f0-9]{64}$/.test(event.key)||!['answer','practice'].includes(event.kind))throw Error('奖励事件无效。');const key=`${event.kind}:${event.key}`;if(daily.keys.includes(key))continue;daily.keys.push(key);const amount=event.kind==='answer'?GAME_CONFIG.answerGold:GAME_CONFIG.taskGold;gold+=Math.min(amount,Math.max(0,GAME_CONFIG.dailyCap-daily.earned));daily.earned=Math.min(GAME_CONFIG.dailyCap,daily.earned+amount);}
+    p.gold+=gold;let gifts=[];if(command.completed){p.practiceCount++;gifts=noviceGifts(p);}result={gold,gifts,day,earned:daily.earned};addLedger(p,{at:now,kind:'reward',gold});
+  }else throw Error('不支持的游戏操作。');
+  p.updatedAt=now;p.revision++;p.receipts[requestId]=structuredClone(result);return result;
+}
+export function parseGameBackup(data){
+  if(data?.format!=='recognition-adventure'||![1,2,3].includes(data.version))throw Error('请选择独立游戏存档，考核备份不能在此恢复。');
+  const p=data.profile;const integer=(n,min=0,max=1e9)=>Number.isSafeInteger(n)&&n>=min&&n<=max;const str=v=>typeof v==='string'&&v.length<=160;
+  if(!p||![1,2,3].includes(p.version)||data.version!==p.version||!str(p.id)||!p.id||p.initialGift!==true||!integer(p.gold)||!integer(p.tickets)||!integer(p.createdAt,0,1e15)||!integer(p.updatedAt,0,1e15)||!integer(p.revision)||!integer(p.practiceCount)||!integer(p.mockCount)||!Array.isArray(p.pets)||p.pets.length>20000||!Array.isArray(p.equipment)||p.equipment.length>20000||!Array.isArray(p.cleared)||p.cleared.length>30||p.cleared.some((v,i)=>v!==i+1)||!Array.isArray(p.gifts)||p.gifts.some(x=>!['other-starter',...COMPANIONS].includes(x))||!['',...Object.keys(EVOLUTIONS)].includes(p.starter)||!str(p.activePet))throw Error('游戏存档格式不完整，原存档未改动。');
+  const equipment=p.equipment.map(g=>{if(!str(g.id)||!EQUIPMENT[g.type]||!integer(g.level,1,10))throw Error('装备记录无效。');return {id:g.id,type:g.type,level:g.level};});
+  const pets=p.pets.map(v=>{if(p.version>=2&&!integer(v.copies,1,1e9))throw Error('伙伴累计数量无效。');if(!str(v.id)||!SPECIES[v.species]||!integer(v.level,1,30)||!integer(v.form,0,EVOLUTIONS[v.species]?3:0)||!v.equipment||!str(v.source))throw Error('宠物记录无效。');const slots={};for(const slot of ['weapon','armor','charm']){const key=v.equipment[slot];if(!str(key)||(key&&!equipment.some(g=>g.id===key&&EQUIPMENT[g.type].slot===slot)))throw Error('宠物装备关联无效。');slots[slot]=key;}return {id:v.id,species:v.species,level:v.level,form:v.form,equipment:slots,source:v.source,copies:p.version>=2?v.copies:1};});
+  if(p.version>=2&&new Set(pets.map(v=>v.species)).size!==pets.length)throw Error('同种伙伴应仅保留一个记录。');
+  const lootClaimed=p.version>=2?p.lootClaimed:[];if(!Array.isArray(lootClaimed)||lootClaimed.some(n=>!p.cleared.includes(n)))throw Error('首通奖励记录无效。');
+  const used=pets.flatMap(v=>Object.values(v.equipment)).filter(Boolean);if(new Set(used).size!==used.length||new Set(pets.map(x=>x.id)).size!==pets.length||new Set(equipment.map(x=>x.id)).size!==equipment.length||(p.activePet&&!pets.some(x=>x.id===p.activePet)))throw Error('游戏存档存在重复或失效的关联。');
+  if(!p.daily||typeof p.daily!=='object'||Array.isArray(p.daily)||!p.receipts||typeof p.receipts!=='object'||Array.isArray(p.receipts)||Object.keys(p.receipts).length>200000)throw Error('游戏账本无效。');
+  const daily={};for(const [day,d]of Object.entries(p.daily)){if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!integer(d.earned,0,120)||!Array.isArray(d.keys)||d.keys.length>100000||d.keys.some(k=>! /^(answer|practice|mock):[a-f0-9]{64}$/.test(k)))throw Error('每日奖励账本无效。');daily[day]={earned:d.earned,keys:[...new Set(d.keys)]};}
+  if(p.version===3&&(!p.pity||!integer(p.pity.sinceSSR,0,GAME_CONFIG.pityLimit-1)||!integer(p.pity.total)||p.pity.total<p.pity.sinceSSR||!Array.isArray(p.campaigns)||p.campaigns.some(x=>x!==BONUS_CAMPAIGN.id)||new Set(p.campaigns).size!==p.campaigns.length))throw Error('保底或赠券记录无效，原存档未改动。');
+  // Only whitelist known fields. No names, photos, quiz answers or arbitrary imports enter a game backup.
+  const receipts={};for(const [key]of Object.entries(p.receipts)){if(!str(key))throw Error('结算记录无效。');receipts[key]={restored:true};}
+  return migrateGame({version:p.version,pity:p.version===3?{sinceSSR:p.pity.sinceSSR,total:p.pity.total}:undefined,campaigns:p.version===3?[...p.campaigns]:undefined,id:p.id,createdAt:p.createdAt,updatedAt:p.updatedAt,revision:p.revision,initialGift:true,tickets:p.tickets,gold:p.gold,starter:p.starter,activePet:p.activePet,pets,equipment,cleared:[...p.cleared],lootClaimed:[...new Set(lootClaimed)],migration:p.migration&&['merged','refund','backfilled'].every(k=>integer(p.migration[k]))?{merged:p.migration.merged,refund:p.migration.refund,backfilled:p.migration.backfilled}:undefined,practiceCount:p.practiceCount,mockCount:p.mockCount,gifts:[...new Set(p.gifts)],daily,receipts,ledger:Array.isArray(p.ledger)?p.ledger.slice(0,300).map(v=>({at:Number(v.at)||0,kind:String(v.kind).slice(0,30),gold:Number(v.gold)||0,tickets:Number(v.tickets)||0})):[]});
+}

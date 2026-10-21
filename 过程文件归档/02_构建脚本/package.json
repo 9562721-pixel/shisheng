@@ -1,0 +1,21 @@
+{
+  "name": "shisheng",
+  "version": "3.7.0",
+  "private": true,
+  "description": "年度考核口述背诵、无限刷题与独立数码冒险存档",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --experimental-strip-types --test src/v3/annual.test.mjs src/v3/assessment.test.mjs src/v3/overview.test.mjs src/v3/study-plan.test.mjs src/v3/legacy.test.mjs src/v3/overview-visibility.test.mjs src/v3/game.test.mjs src/v3/game-presentation.test.mjs",
+    "build:legacy": "node scripts/build-v2.mjs"
+  },
+  "devDependencies": {
+    "vite": "8.3.2",
+    "fake-indexeddb": "6.2.5"
+  },
+  "type": "module",
+  "dependencies": {
+    "jszip": "3.10.2",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "4.6.5"
+  }
+}

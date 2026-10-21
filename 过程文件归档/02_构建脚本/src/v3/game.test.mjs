@@ -1,0 +1,119 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {indexedDB} from 'fake-indexeddb';
+import {newGame,gameCommand,individual,petStats,battle,STAGES,SPECIES,parseGameBackup,beijingDay,migrateGame,petStars,totalCopies} from './game-model.js';
+import {transactGame,gameBackup,restoreGame} from './game-storage.js';
+import {buildQuestions,publicQuiz,objectiveCommand} from './objective.js';
+import {sealDataset,annualRows,matchOfficialPhotos} from './annual.js';
+import {appendAnnual,selectAnnual,readProgress,saveAnnualProgress} from './annual-storage.js';
+import {reconcilePracticeState} from './model.ts';
+globalThis.indexedDB=indexedDB;globalThis.window={dispatchEvent(){}};
+const cmd=(p,type,more={},opt={})=>gameCommand(p,{type,requestId:crypto.randomUUID(),...(type==='reward'?{mode:'continuous',kind:'learn'}:{}),...more},opt);
+const key=n=>n.toString(16).padStart(64,'0');
+const time=Date.parse('2026-10-20T15:59:00Z');
+test('Welcome and campaign tickets mint once; idempotent draw merges duplicate species and raises stars',()=>{const p=newGame();cmd(p,'starter',{species:'agumon'});const c={type:'draw',currency:'tickets',count:10,requestId:'one-batch'};const a=gameCommand(p,c,{random:()=>.5});gameCommand(p,c);assert.equal(a.pets.length,10);assert.equal(p.tickets,190);assert.equal(p.gold,0);assert.equal(p.pets.length,2);assert.equal(totalCopies(p),11);assert.equal(petStars(p.pets[1]),4);assert.equal(parseGameBackup(gameBackup(p)).tickets,190);});
+test('daily cap, answer/task dedup, next Beijing day, spending never reset quota',()=>{const p=newGame();cmd(p,'reward',{events:Array.from({length:100},(_,n)=>({kind:'answer',key:key(n)}))},{now:time});assert.equal(p.gold,120);cmd(p,'reward',{events:[{kind:'answer',key:key(0)}]},{now:time});assert.equal(p.gold,120);p.gold-=30;cmd(p,'reward',{events:[{kind:'practice',key:key(888)}]},{now:time});assert.equal(p.gold,90);const next=time+120000;assert.notEqual(beijingDay(time),beijingDay(next));cmd(p,'reward',{events:[{kind:'answer',key:key(0)}]},{now:next});assert.equal(p.gold,92);assert.equal(p.daily[beijingDay(next)].earned,2);});
+test('same individual evolves with levels and equipment, starter growth stays moderate',()=>{const p=newGame();cmd(p,'starter',{species:'agumon'});p.gold=1000;const v=p.pets[0],identity=v.id;for(let i=0;i<4;i++)cmd(p,'level',{petId:v.id});cmd(p,'evolve',{petId:v.id});assert.equal(v.form,1);assert.equal(v.id,identity);assert.equal(v.level,5);assert.equal(p.gold,880);assert.ok(petStats(v).attack>30);assert.throws(()=>cmd(p,'evolve',{petId:v.id}));});
+test('every SSR can clear all 10 release stages at level 1 without study gates or rewards',()=>{for(const species of Object.keys(SPECIES).filter(k=>SPECIES[k].rarity==='SSR')){const p=newGame(),v=individual(species,'test');p.pets=[v];p.activePet=v.id;for(const stage of STAGES){assert.equal(battle(v,[],stage).won,true,species+' stage '+stage.id);cmd(p,'fight',{stageId:stage.id});}assert.equal(p.cleared.length,10);assert.equal(p.gold,0);assert.throws(()=>cmd(p,'fight',{stageId:11}));assert.deepEqual(parseGameBackup(gameBackup(p)).cleared,p.cleared);}});
+test('wrong slots and shared equipment are controlled; backup rejects bad and strips student fields',()=>{const p=newGame();cmd(p,'starter',{species:'gabumon'});p.gold=90;cmd(p,'equipment-draw',{}, {random:()=>.5});const g=p.equipment[0],v=p.pets[0];cmd(p,'equip',{petId:v.id,slot:'armor',gearId:g.id});assert.throws(()=>cmd(p,'equip',{petId:v.id,slot:'weapon',gearId:g.id}));const b=gameBackup(p);b.profile.studentName='not allowed';assert.equal(parseGameBackup(b).studentName,undefined);b.profile.tickets=-1;assert.throws(()=>parseGameBackup(b));});
+test('uniform fields are not questions; correct options unique and mock answers hidden',()=>{const rows=Array.from({length:6},(_,i)=>({id:String(i),name:'演示'+i,className:'共同班',photo:'data:image/png;base64,QQ==',assessmentAddress:'共同住址',needyLabel:'无',psychLabel:'无'}));const q=buildQuestions(rows,rows.map(x=>x.id),'full');assert.equal(q.questions.length,6);assert.equal(q.facts.length,24);for(const x of q.questions)assert.equal(x.options.length,new Set(x.options).size);assert.ok(publicQuiz({...q,kind:'exam',status:'active'}).questions.every(x=>x.correct===undefined));});
+test('real transactions serialize multi-window mint, debit, restore and independent annual operations',async()=>{
+ const minted=await Promise.all(Array.from({length:10},()=>transactGame()));assert.ok(minted.every(x=>x.profile.tickets===200));assert.equal(new Set(minted.map(x=>x.profile.id)).size,1);
+ await transactGame({type:'starter',species:'agumon',requestId:'choose'});
+ await Promise.all(Array.from({length:20},()=>transactGame({type:'draw',count:10,currency:'tickets',requestId:'same-double-click'})));
+ assert.equal((await transactGame()).profile.tickets,190);
+ const pulls=await Promise.allSettled(Array.from({length:25},(_,i)=>transactGame({type:'draw',count:10,currency:'tickets',requestId:'window-'+i})));
+ assert.equal(pulls.filter(x=>x.status==='fulfilled').length,19);
+ let p=(await transactGame()).profile;assert.equal(p.tickets,0);assert.equal(totalCopies(p),201);assert.equal(new Set(p.pets.map(v=>v.species)).size,p.pets.length);
+ const backup=gameBackup(p),before=JSON.stringify(p);
+ const data='data:image/png;base64,iVBORw0KGgo=';
+ const official=Array.from({length:6},(_,i)=>({id:String(202600001+i),name:'虚构学生'+i,className:i%2?'演示一班':'演示二班',assessmentAddress:'演示省'+i,needyLabel:'无',psychLabel:'无',other:'无'}));
+ async function dataset(year){return sealDataset({id:crypto.randomUUID(),year,label:year+' 年考核',photoPackage:{name:'fixture.zip'},table:{name:'fixture.xls',sheet:'Sheet1',data:'data:application/vnd.ms-excel;base64,QUJD',sha256:'fixture'},rows:official,photos:matchOfficialPhotos(official,official.map(r=>({key:r.id,path:r.id+'.png',data})))});}
+ const a=await dataset('2026'),b=await dataset('2027');await appendAnnual(a);await appendAnnual(b);await selectAnnual(a.id);await saveAnnualProgress(a.id,a.hash,reconcilePracticeState(null,annualRows(a)));const copy={...a,id:crypto.randomUUID(),restoredAt:new Date().toISOString()};await appendAnnual(copy);assert.equal(JSON.stringify((await transactGame()).profile),before);
+ let quiz=await objectiveCommand(a,annualRows(a),{action:'continuous-start',scope:'name',ids:official.map(r=>r.id)});const runId=quiz.continuousId;
+ for(let i=0;i<official.length;i++){
+  for(const question of quiz.questions){const correct=question.options.indexOf(official.find(x=>x.id===question.studentId).name);await Promise.all([objectiveCommand(a,annualRows(a),{action:'answer',quizId:quiz.id,questionId:question.id,choice:correct}),objectiveCommand(a,annualRows(a),{action:'answer',quizId:quiz.id,questionId:question.id,choice:correct})]);}
+  await Promise.all([objectiveCommand(a,annualRows(a),{action:'submit',quizId:quiz.id}),objectiveCommand(a,annualRows(a),{action:'submit',quizId:quiz.id})]);
+  if(i<official.length-1)quiz=await objectiveCommand(a,annualRows(a),{action:'continuous-next',runId});
+ }
+ await saveAnnualProgress(a.id,a.hash,{progress:{},studyPlans:[]});assert.equal((await readProgress(a.id)).state.objective.quizzes[0].status,'done');assert.equal((await readProgress(a.id)).state.progress[official[0].id].name.last,'good');
+ p=(await transactGame()).profile;assert.equal(p.gold,22);assert.equal(p.practiceCount,1);assert.equal(p.gifts.length,2);assert.ok(!JSON.stringify(gameBackup(p)).includes('虚构学生'));
+ const beforeMock=JSON.stringify(p);await assert.rejects(objectiveCommand(b,annualRows(b),{action:'start',kind:'exam',scope:'name',ids:official.slice(0,5).map(r=>r.id)}),/口述自评/);assert.equal(JSON.stringify((await transactGame()).profile),beforeMock);
+ const rev=(await transactGame()).profile.revision;await restoreGame(backup,rev);p=(await transactGame()).profile;assert.equal(p.gold,backup.profile.gold);assert.equal(p.tickets,0);assert.equal(totalCopies(p),201);assert.equal(new Set(p.pets.map(v=>v.species)).size,p.pets.length);await assert.rejects(restoreGame(backup,rev),/变化/);assert.ok((await readProgress(a.id)).state.objective.quizzes.length);
+});
+
+test('legacy duplicate migration keeps active identity, strongest training, all equipment and refunds redundant levels exactly once',()=>{
+ const p=newGame();p.version=1;p.gold=77;p.tickets=63;const a=individual('agumon','first'),b=individual('agumon','draw');a.level=5;a.form=1;b.level=12;b.form=2;p.pets=[a,b];p.activePet=a.id;p.starter='agumon';p.cleared=[1,2];p.equipment=[{id:'old-a',type:'weapon-R',level:1},{id:'old-b',type:'weapon-SR',level:2}];a.equipment.weapon='old-a';b.equipment.weapon='old-b';
+ const result=migrateGame(p);assert.equal(result.pets.length,1);assert.equal(result.pets[0].id,a.id);assert.equal(result.pets[0].level,12);assert.equal(result.pets[0].form,2);assert.equal(result.pets[0].copies,2);assert.equal(result.pets[0].equipment.weapon,'old-b');assert.equal(result.gold,197);assert.equal(result.tickets,163);assert.equal(result.equipment.length,4);assert.equal(result.lootClaimed.length,2);const snapshot=JSON.stringify(result);migrateGame(result);assert.equal(JSON.stringify(result),snapshot);
+ const legacy=newGame();legacy.version=1;legacy.pets=[individual('gabumon','test'),individual('gabumon','test')];legacy.activePet=legacy.pets[0].id;legacy.starter='gabumon';legacy.tickets=0;const imported=parseGameBackup({format:'recognition-adventure',version:1,profile:legacy});assert.equal(imported.version,3);assert.equal(imported.tickets,100);assert.equal(imported.pets.length,1);assert.equal(imported.pets[0].copies,2);
+});
+test('five-star SR can clear release story; first-clear loot never repeats and gives no farmable gold',()=>{for(const species of ['devimon','etemon']){const p=newGame(),v=individual(species,'test');v.copies=16;p.pets=[v];p.activePet=v.id;assert.equal(petStars(v),5);for(const stage of STAGES){const r=cmd(p,'fight',{stageId:stage.id});assert.equal(r.won,true);assert.equal(r.loot.length,1);}assert.equal(p.gold,0);assert.equal(p.equipment.length,10);const repeat=cmd(p,'fight',{stageId:10});assert.equal(repeat.loot.length,0);assert.equal(p.equipment.length,10);assert.deepEqual(parseGameBackup(gameBackup(p)).lootClaimed,p.cleared);}});
+test('continuous practice covers filtered snapshot beyond six, resumes and serializes repeated submit/next with immediate capped rewards',async()=>{
+ const data='data:image/png;base64,iVBORw0KGgo=',official=Array.from({length:14},(_,i)=>({id:String(203000001+i),name:'虚构连续'+i,className:i%2?'连续一班':'连续二班',assessmentAddress:'演示省'+i,needyLabel:i%2?'是':'无',psychLabel:i%3?'无':'关注',other:'无'}));
+ const dataset=await sealDataset({id:crypto.randomUUID(),year:'2030',label:'连续验收',photoPackage:{name:'test.zip'},table:{name:'test.xls',sheet:'Sheet1',data:'data:application/vnd.ms-excel;base64,QUJD',sha256:'fixture'},rows:official,photos:matchOfficialPhotos(official,official.map(r=>({key:r.id,path:r.id+'.png',data})))});await appendAnnual(dataset);const rows=annualRows(dataset),selected=rows.slice(0,13).map(r=>r.id);
+ let q=await objectiveCommand(dataset,rows,{action:'continuous-start',scope:'full',ids:selected}),runId=q.continuousId;
+ for(let i=0;i<selected.length;i++){
+  assert.equal(q.ids[0],selected[i]);assert.equal(q.continuous.total,13);assert.equal(q.position,i);
+  for(const item of q.questions){const choice=item.options.indexOf(rows.find(r=>r.id===item.studentId)[item.field]);q=await objectiveCommand(dataset,rows,{action:'answer',quizId:q.id,questionId:item.id,choice});}
+  const submitted=await Promise.all([objectiveCommand(dataset,rows,{action:'submit',quizId:q.id}),objectiveCommand(dataset,rows,{action:'submit',quizId:q.id})]);assert.equal(submitted[0].continuous.index,i+1);
+  if(i===6){const state=(await readProgress(dataset.id)).state;const clean=reconcilePracticeState(state,rows);assert.equal(clean.objective.continuousRuns[0].index,7);assert.equal(clean.objective.quizzes[0].outbox.length,0);}
+  if(i<selected.length-1){const next=await Promise.all([objectiveCommand(dataset,rows,{action:'continuous-next',runId}),objectiveCommand(dataset,rows,{action:'continuous-next',runId})]);assert.equal(next[0].id,next[1].id);q=await objectiveCommand(dataset,rows,{action:'get',quizId:next[0].id});}else{q=submitted[0];}
+ }
+ assert.equal(q.continuous.status,'done');assert.equal(q.continuous.correct,65);assert.equal(q.continuous.questionsTotal,65);assert.ok(q.continuous.gold>0&&q.continuous.gold<=120);assert.equal((await transactGame()).profile.daily[beijingDay()].earned,120);assert.equal((await readProgress(dataset.id)).state.progress[selected[12]].full.last,'good');assert.equal((await readProgress(dataset.id)).state.progress[rows[13].id],undefined);
+});
+test('two windows migrate an old duplicate inventory once, preserving tickets and daily cap',async()=>{const legacy=newGame();legacy.version=1;legacy.gold=17;legacy.tickets=47;legacy.starter='agumon';legacy.pets=[individual('agumon','初始伙伴'),individual('agumon','抽取')];legacy.pets[0].level=5;legacy.pets[1].level=3;legacy.activePet=legacy.pets[0].id;legacy.cleared=[1,2];legacy.daily[beijingDay()]={earned:120,keys:[]};await new Promise((resolve,reject)=>{const request=indexedDB.open('recognition-adventure-independent',1);request.onsuccess=()=>{const db=request.result,tx=db.transaction('profile','readwrite');tx.objectStore('profile').put(legacy,'current');tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>reject(tx.error);};request.onerror=()=>reject(request.error);});const results=await Promise.all(Array.from({length:8},()=>transactGame()));for(const {profile:p}of results){assert.equal(p.version,3);assert.equal(p.pets.length,1);assert.equal(p.pets[0].copies,2);assert.equal(p.gold,77);assert.equal(p.tickets,147);assert.equal(p.equipment.length,2);assert.equal(p.daily[beijingDay()].earned,120);}const ids=results.map(({profile:p})=>p.equipment.map(g=>g.id).join());assert.equal(new Set(ids).size,1);});
+
+test('100th summon guarantees SSR across tickets, gold, singles and ten pulls; subsequent cycles also guarantee',()=>{
+ const p=newGame();cmd(p,'starter',{species:'agumon'});p.gold=1000;const random=()=>.8;
+ for(let i=0;i<9;i++)cmd(p,'draw',{currency:i%2?'gold':'tickets',count:10},{random});
+ assert.equal(p.pity.sinceSSR,90);assert.equal(p.pity.total,90);assert.equal(p.gold,600);
+ for(let i=0;i<9;i++)cmd(p,'draw',{currency:'gold',count:1},{random});assert.equal(p.pity.sinceSSR,99);assert.equal(p.gold,510);
+ const result=cmd(p,'draw',{currency:'tickets',count:1},{random});assert.equal(result.pulls[0].guaranteed,true);assert.equal(SPECIES[result.pets[0].species].rarity,'SSR');assert.equal(p.pity.sinceSSR,0);assert.equal(p.pity.total,100);
+ p.tickets=100;for(let i=0;i<10;i++)cmd(p,'draw',{currency:'tickets',count:10},{random});assert.equal(p.pity.total,200);assert.equal(p.pity.sinceSSR,0);
+});
+test('natural SSR resets pity; a ten-pull continues counting after a guarantee and a retry does not advance or charge',()=>{
+ const p=newGame();cmd(p,'starter',{species:'agumon'});p.pity={sinceSSR:90,total:90};let n=0;
+ const natural=cmd(p,'draw',{currency:'tickets',count:1},{random:()=>n++===0?.001:.5});assert.equal(natural.pulls[0].guaranteed,false);assert.equal(SPECIES[natural.pets[0].species].rarity,'SSR');assert.equal(p.pity.sinceSSR,0);
+ p.pity={sinceSSR:95,total:186};const command={type:'draw',count:10,currency:'tickets',requestId:'pity-ten'};const batch=gameCommand(p,command,{random:()=>.8});assert.deepEqual(batch.pulls.map((x,i)=>x.guaranteed?i:null).filter(x=>x!==null),[4]);assert.equal(p.pity.sinceSSR,5);const before=JSON.stringify(p);gameCommand(p,command,{random:()=>0});assert.equal(JSON.stringify(p),before);
+ p.gold=9;assert.throws(()=>cmd(p,'draw',{currency:'gold',count:1}),/金币不足/);assert.equal(p.pity.sinceSSR,5);
+});
+test('legacy v2 upgrade only appends campaign tickets, initializes pity and preserves all assets and quota',()=>{
+ const p=newGame();cmd(p,'starter',{species:'gabumon'});p.version=2;delete p.pity;delete p.campaigns;p.gold=83;p.tickets=7;p.daily[beijingDay()]={earned:120,keys:[]};p.pets[0].copies=8;p.pets[0].level=5;p.pets[0].form=1;
+ const before=structuredClone(p),up=migrateGame(p);assert.equal(up.tickets,107);assert.equal(up.version,3);assert.deepEqual(up.pity,{sinceSSR:0,total:0});for(const key of ['gold','pets','equipment','starter','activePet','cleared','daily','receipts','gifts'])assert.deepEqual(up[key],before[key],key);
+ const snapshot=JSON.stringify(up);migrateGame(up);assert.equal(JSON.stringify(up),snapshot);assert.equal(up.campaigns.length,1);
+ const saved=gameBackup(up);assert.equal(saved.version,3);const imported=parseGameBackup(saved);assert.equal(imported.tickets,107);assert.deepEqual(imported.pity,up.pity);assert.deepEqual(imported.campaigns,up.campaigns);
+});
+test('backup persists progressed pity and gift receipt; invalid counters or receipts are rejected',()=>{
+ const p=newGame();cmd(p,'starter',{species:'agumon'});cmd(p,'draw',{currency:'tickets',count:10},{random:()=>.8});const b=gameBackup(p),restored=parseGameBackup(b);assert.equal(restored.tickets,190);assert.deepEqual(restored.pity,{sinceSSR:10,total:10});assert.deepEqual(restored.campaigns,p.campaigns);
+ for(const mutate of [b=>b.profile.pity.sinceSSR=100,b=>b.profile.pity.total=0,b=>delete b.profile.pity,b=>b.profile.campaigns.push('unrecognized'),b=>b.profile.campaigns.push(b.profile.campaigns[0])]){const invalid=structuredClone(b);mutate(invalid);assert.throws(()=>parseGameBackup(invalid),/记录无效/);}
+});
+test('concurrent windows grant v2 campaign once and serialize pity, debit and restore without stacking',async()=>{
+ const {BONUS_CAMPAIGN}=await import('./game-model.js');const p=newGame();cmd(p,'starter',{species:'agumon'});p.version=2;delete p.pity;delete p.campaigns;p.tickets=15;p.gold=47;p.ledger=p.ledger.filter(x=>x.kind!=='bonus-100-20261021');
+ const write=profile=>new Promise((resolve,reject)=>{const r=indexedDB.open('recognition-adventure-independent',1);r.onsuccess=()=>{const db=r.result,tx=db.transaction('profile','readwrite');tx.objectStore('profile').put(profile,'current');tx.oncomplete=()=>{db.close();resolve();};tx.onabort=()=>reject(tx.error);};r.onerror=()=>reject(r.error);});await write(p);
+ const reads=await Promise.all(Array.from({length:12},()=>transactGame()));assert.ok(reads.every(x=>x.profile.tickets===115));assert.ok(reads.every(x=>x.profile.campaigns.length===1));assert.ok(reads.every(x=>x.profile.ledger.filter(y=>y.kind===BONUS_CAMPAIGN.id).length===1));
+ let current=reads[0].profile;current.pity={sinceSSR:99,total:99};await write(current);
+ const draws=await Promise.all(Array.from({length:12},()=>transactGame({type:'draw',currency:'gold',count:1,requestId:'same-pity-click'},{random:()=>.8})));assert.ok(draws.every(x=>x.result.pulls[0].guaranteed));current=(await transactGame()).profile;assert.equal(current.gold,37);assert.equal(current.tickets,115);assert.deepEqual(current.pity,{sinceSSR:0,total:100});
+ const b=gameBackup(current);await restoreGame(b,current.revision);current=(await transactGame()).profile;assert.equal(current.gold,37);assert.equal(current.tickets,115);assert.equal(current.campaigns.length,1);assert.deepEqual(current.pity,b.profile.pity);
+});
+
+test('only continuous learn reward events can mint gold or advance novice tasks; mock and ordinary group rewards are inert',()=>{
+ const p=newGame();cmd(p,'starter',{species:'agumon'});const before=JSON.stringify(p),events=[{kind:'answer',key:key(700)}];
+ for(const payload of [{kind:'learn'},{kind:'exam'},{mode:'group',kind:'learn'},{mode:'continuous',kind:'exam'}]){
+  const result=gameCommand(p,{type:'reward',requestId:crypto.randomUUID(),events,completed:true,...payload});assert.equal(result.gold,0);assert.equal(JSON.stringify(p),before);
+ }
+ const result=cmd(p,'reward',{events,completed:true});assert.equal(result.gold,2);assert.equal(p.practiceCount,1);assert.equal(p.mockCount,0);
+ assert.throws(()=>cmd(p,'reward',{events:[{kind:'mock',key:key(701)}]}),/奖励事件无效/);
+});
+test('retired objective group/mock outboxes are closed without minting; paid history and game assets are preserved',async()=>{
+ const {mutateAnnualProgress}=await import('./annual-storage.js');
+ const official=Array.from({length:6},(_,i)=>({id:'20410000'+i,name:'虚构口述'+i,className:'测试班'+i,assessmentAddress:'演示地址'+i,needyLabel:'无',psychLabel:'无',other:'无'}));
+ const dataset=await sealDataset({id:crypto.randomUUID(),year:'2041',label:'模式恢复验收',photoPackage:{name:'test.zip'},table:{name:'test.xls',sheet:'Sheet1',data:'data:application/vnd.ms-excel;base64,QUJD',sha256:'fixture'},rows:official,photos:matchOfficialPhotos(official,official.map(r=>({key:r.id,path:r.id+'.png',data:'data:image/png;base64,QUJD'})))});await appendAnnual(dataset);
+ const rows=annualRows(dataset),ids=rows.map(r=>r.id);const old=[];
+ for(const kind of ['learn','exam']){const q={id:crypto.randomUUID(),kind,scope:'name',ids:kind==='exam'?ids.slice(0,5):ids,status:'active',createdAt:Date.now(),...buildQuestions(rows,kind==='exam'?ids.slice(0,5):ids,'name'),outbox:[{id:crypto.randomUUID(),paid:false,events:[{kind:'answer',key:key(800)},{kind:kind==='exam'?'mock':'practice',key:key(801)}],completed:true},{id:crypto.randomUUID(),paid:true,gold:8,gifts:[]}]};old.push(q);}
+ await mutateAnnualProgress(dataset.id,dataset.hash,s=>{s.objective={quizzes:old};});const before=JSON.stringify((await transactGame()).profile);
+ for(const q of old){await objectiveCommand(dataset,rows,{action:'get',quizId:q.id});await assert.rejects(objectiveCommand(dataset,rows,{action:'answer',quizId:q.id,questionId:q.questions[0].id,choice:0}),/历史/);await assert.rejects(objectiveCommand(dataset,rows,{action:'submit',quizId:q.id}),/历史/);}
+ const saved=(await readProgress(dataset.id)).state;for(const q of saved.objective.quizzes){assert.equal(q.outbox[0].paid,true);assert.equal(q.outbox[0].gold,0);assert.equal(q.outbox[1].gold,8);}assert.equal(JSON.stringify((await transactGame()).profile),before);
+ const recall={kind:'exam',scope:'name',stage:'done',ids:ids.slice(0,5),queue:ids.slice(0,5),index:5,revealed:false,missed:[],results:ids.slice(0,5).map(id=>({id,missed:[]})),retries:{}};
+ const state=reconcilePracticeState(null,rows);state.session=recall;state.exams=[{at:Date.now(),scope:'name',results:recall.results}];state.progress[ids[0]]={name:{attempts:1,last:'miss',missed:['name'],at:Date.now()}};await saveAnnualProgress(dataset.id,dataset.hash,state);
+ assert.equal((await readProgress(dataset.id)).state.exams.length,1);assert.equal(JSON.stringify((await transactGame()).profile),before);
+});

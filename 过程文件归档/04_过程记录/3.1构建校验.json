@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-20",
+  "version": "3.1.0",
+  "tests": 35,
+  "passed": 35,
+  "htmlScriptSyntax": true,
+  "iframeScriptSyntax": true,
+  "singleFile": true,
+  "files": {
+    "index.html": {
+      "bytes": 1629163,
+      "sha256": "e8ce80fab824440041de7cd86299f58cb57936c153979e985daa623cdba4323c"
+    },
+    "shisheng.html": {
+      "bytes": 1629163,
+      "sha256": "e8ce80fab824440041de7cd86299f58cb57936c153979e985daa623cdba4323c"
+    }
+  }
+}

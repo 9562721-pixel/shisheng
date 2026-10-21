@@ -1,0 +1,54 @@
+
+> shisheng@3.2.0 test
+> node --experimental-strip-types --test src/v3/annual.test.mjs src/v3/assessment.test.mjs src/v3/overview.test.mjs src/v3/study-plan.test.mjs src/v3/legacy.test.mjs src/v3/overview-visibility.test.mjs src/v3/game.test.mjs
+
+✔ answers and roster belong only to official inputs; photo filename terms and ledger edits cannot override (4.877792ms)
+✔ ledger receives only missing portrait with BOTH identity fields matching, never answers or overwrites (1.938875ms)
+✔ ambiguous photos block sealing until explicitly ignored; no last-wins association (1.261542ms)
+✔ locked payload validation detects changes to original facts or pictures (3.902167ms)
+✔ annual storage is append-only; versions and progress isolated from ledger and each other (8.836875ms)
+✔ seven official columns retain their meaning and blank exam items become no (0.613458ms)
+✔ title rows and rearranged headers work; duplicate IDs all stay out of import (0.083375ms)
+✔ ID matching refuses names or class conflicts and new roster facts stay minimal (0.148958ms)
+✔ official data remains intact; current assessed answer changes reset only affected full recall (2.931125ms)
+✔ missing photos and changed roster identity prevent full-study inclusion (0.144792ms)
+✔ 100 tickets mint once; idempotent draw keeps distinct duplicates, not gold (3.844375ms)
+✔ daily cap, answer/task dedup, next Beijing day, spending never reset quota (0.412875ms)
+✔ same individual evolves with levels and equipment, starter growth stays moderate (0.25175ms)
+✔ every SSR can clear all 10 release stages at level 1 without study gates or rewards (2.234584ms)
+✔ wrong slots and shared equipment are controlled; backup rejects bad and strips student fields (0.244375ms)
+✔ uniform fields are not questions; correct options unique and mock answers hidden (0.31975ms)
+✔ real transactions serialize multi-window mint, debit, restore and independent annual operations (38.564917ms)
+✔ checking absent old stores never creates or changes a database (0.434084ms)
+✔ old photos, answers and progress can be exported in their original format without rewriting source (9.384834ms)
+✔ missing old photo fails explicitly instead of exporting an incomplete successful backup (0.59475ms)
+✔ information starts hidden, with an explicit empty-list state (2.021041ms)
+✔ one photo toggles independently without changing the other photos (0.19425ms)
+✔ master ON assigns visible to every result from a mixed state; it never inverts open photos (0.155292ms)
+✔ master OFF assigns hidden to every result from a mixed state; repeated OFF remains hidden (0.104458ms)
+✔ filter changes do not toggle existing states; the master operates on current results (0.129125ms)
+✔ hidden cards do not leak names or addresses through captions, alternate text or accessible names (1.742709ms)
+✔ revealing a photo renders only its three information lines; closing removes those answer strings (0.882ms)
+✔ all provinces included by default; no user habit is hardcoded (1.768084ms)
+✔ OR within a facet; AND across class, province, hardship, and psychological facets (0.199375ms)
+✔ province reversal applies to arbitrary provinces without changing locked source rows (0.148333ms)
+✔ facet counts respect other dimensions and empty matches stay explicit (7.519333ms)
+✔ five assessed fields omit student number and other; ignored source fields do not invalidate progress (3.5645ms)
+✔ saved compound filters and density survive validation; old full sessions stop at rule change (5.864625ms)
+✔ fixed groups preserve source order before and after completion, cleaning, and state restore (4.372625ms)
+✔ plan identity ignores selected-option order and distinguishes scope, filters, and ordering (0.128167ms)
+✔ random groups are generated once and survive persisted validation without another shuffle (0.135042ms)
+✔ manual completion and reset change plan markers while preserving answer grades and source (1.042542ms)
+✔ invalid group membership cannot overwrite progress or restore a mismatched linked session (1.940875ms)
+✔ legacy random default migrates to fixed; explicit user random selection is retained (1.141ms)
+✔ Enter submits after a focused missed-field checkbox, once; text, dialogs and composition remain protected (0.244416ms)
+✔ Space keeps native checkbox and button behavior, and only advances or reveals from the practice surface (0.131334ms)
+✔ completed plans have no next unfinished group; malformed optional filters restore safely (0.256833ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 235.596125
