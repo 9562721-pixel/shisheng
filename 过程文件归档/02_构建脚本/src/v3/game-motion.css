@@ -40,3 +40,5 @@ dialog{background:var(--base);color:var(--ink)}button{background:#1a2735;border-
 @media(max-width:560px){.ultimate-cutin{inset:16% -5% 26%;gap:7px;padding:10px 9%}.ultimate-cutin .sprite{width:96px;height:125px}.ultimate-title small{font-size:10px;letter-spacing:0}.ultimate-title strong{font-size:23px}.ultimate-charge{width:85px;height:85px}.ultimate-impact{width:95px;height:95px}.ultimate-impact i{height:20px;transform-origin:3px 69px}.ultimate-projectile{width:50px;height:50px}.damage-pop.skill{font-size:29px}.arena-status{gap:5px}.arena-status span:first-child{max-width:75%}}
 
 .from-enemy.beam .ultimate-projectile{transform-origin:right center}
+
+.campaign-notice{padding:10px 14px;border:1px solid #71623e;background:#2d3024;color:#f0daa6;border-radius:5px;margin-bottom:16px;font-size:13px}.pity-status{margin-top:18px;padding:12px 14px;border:1px solid #76633f;background:#262b29;border-radius:5px}.pity-status>b{color:#f4daa4}.pity-status>span{display:block;color:#bdc7cf;font-size:12px;margin-top:4px}.pity-status .progress{margin:8px 0 0}
